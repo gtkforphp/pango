@@ -71,6 +71,8 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_set_text, NULL)
 	PHP_FE(pango_layout_get_text, NULL)
 	PHP_FE(pango_layout_set_markup, NULL)
+	PHP_FE(pango_layout_set_width, NULL)
+	PHP_FE(pango_layout_set_height, NULL)
 	{NULL, NULL, NULL}	
 };
 /* }}} */
