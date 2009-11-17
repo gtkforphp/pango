@@ -65,6 +65,11 @@ PHP_FUNCTION(pango_version_string)
 const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_version, NULL)
 	PHP_FE(pango_version_string, NULL)
+	PHP_FE(pango_cairo_create_layout, NULL)
+	PHP_FE(pango_cairo_update_layout, NULL)
+	PHP_FE(pango_cairo_show_layout, NULL)
+	PHP_FE(pango_layout_set_text, NULL)
+	PHP_FE(pango_layout_get_text, NULL)
 	{NULL, NULL, NULL}	
 };
 /* }}} */
