@@ -81,6 +81,7 @@ PHP_FUNCTION(pango_cairo_update_layout);
 PHP_FUNCTION(pango_cairo_show_layout);
 PHP_FUNCTION(pango_layout_set_text);
 PHP_FUNCTION(pango_layout_get_text);
+PHP_FUNCTION(pango_layout_set_markup);
 
 /* 
   	Declare any global variables you may need between the BEGIN

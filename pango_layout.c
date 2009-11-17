@@ -143,6 +143,29 @@ PHP_FUNCTION(pango_layout_get_text)
 }
 /* }}} */
 
+/* {{{ proto void pango_layout_set_markup(PangoLayout layout, string markup)
+ 	   proto void PangoLayout::setText(string markup)
+	   Sets the markup of the layout. */
+PHP_FUNCTION(pango_layout_set_markup)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	const char *markup;
+	long markup_len;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &layout_zval, pango_ce_pangolayout, &markup, &markup_len) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_markup(layout_object->layout, markup, markup_len);
+}
+
+/* }}} */
+
 /* {{{ proto void pango_cairo_update_layout(CairoContext cr, PangoLayout layout)
  	   proto void PangoLayout::updateLayout(CairoContext cr) 
 	   Updates the private PangoContext of a PangoLayout to match the current transformation 
@@ -240,6 +263,7 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME(PangoLayout, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
