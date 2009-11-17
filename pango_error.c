@@ -12,13 +12,9 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author: Elizabeth Smith <auroraeosrose@php.net>                      |
-  |         Michael Maclean <mgdm@php.net>                               |
-  |         Akshat Gupta <g.akshat@gmail.com>                            |
+  | Author: Michael Maclean <mgdm@php.net>                               |
   +----------------------------------------------------------------------+
 */
-
-/* $Id: pango_error.c 282452 2009-06-19 21:25:13Z auroraeosrose $ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -42,3 +38,11 @@ PHP_MINIT_FUNCTION(pango_error)
 }
 /* }}} */
 
+/*
+ * Local variables:
+ * tab-width: 4
+ * c-basic-offset: 4
+ * End:
+ * vim600: noet sw=4 ts=4 fdm=marker
+ * vim<600: noet sw=4 ts=4
+ */

@@ -32,9 +32,9 @@ ZEND_DECLARE_MODULE_GLOBALS(pango)
 */
 
 zend_class_entry *pango_ce_pango;
-zend_object_handlers *pango_std_object_handlers;
+zend_object_handlers pango_std_object_handlers;
 
-/* proto int pango_version(void)
+/* proto int pango_version(void) {{{
    returns the Pango version */
 PHP_FUNCTION(pango_version)
 {
@@ -44,6 +44,19 @@ PHP_FUNCTION(pango_version)
 
 	RETURN_LONG(pango_version());
 }
+/* }}} */
+
+/* proto int pango_version_string(void) {{{
+   returns the Pango version as a string */
+PHP_FUNCTION(pango_version_string)
+{
+	if(zend_parse_parameters_none() == FAILURE) {
+		return;
+	}
+
+	RETURN_STRING(pango_version_string(), 1);
+}
+/* }}} */
 
 /* {{{ pango_functions[]
  *
@@ -51,6 +64,7 @@ PHP_FUNCTION(pango_version)
  */
 const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_version, NULL)
+	PHP_FE(pango_version_string, NULL)
 	{NULL, NULL, NULL}	
 };
 /* }}} */
@@ -83,9 +97,14 @@ ZEND_GET_MODULE(pango)
  */
 PHP_MINIT_FUNCTION(pango)
 {
-	/* If you have INI entries, uncomment these lines 
-	REGISTER_INI_ENTRIES();
-	*/
+
+    memcpy(&pango_std_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
+    pango_std_object_handlers.clone_obj = NULL;
+
+	PHP_MINIT(pango_error)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(pango_layout)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(pango_font)(INIT_FUNC_ARGS_PASSTHRU);
+
 	return SUCCESS;
 }
 /* }}} */
@@ -125,33 +144,6 @@ PHP_MINFO_FUNCTION(pango)
 }
 /* }}} */
 
-
-/* Remove the following function when you have succesfully modified config.m4
-   so that your module can be compiled into PHP, it exists only for testing
-   purposes. */
-
-/* Every user-visible function in PHP should document itself in the source */
-/* {{{ proto string confirm_pango_compiled(string arg)
-   Return a string to confirm that the module is compiled in */
-PHP_FUNCTION(confirm_pango_compiled)
-{
-	char *arg = NULL;
-	int arg_len, len;
-	char *strg;
-
-	if (zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &arg, &arg_len) == FAILURE) {
-		return;
-	}
-
-	len = spprintf(&strg, 0, "Congratulations! You have successfully modified ext/%.78s/config.m4. Module %.78s is now compiled into PHP.", "pango", arg);
-	RETURN_STRINGL(strg, len, 0);
-}
-/* }}} */
-/* The previous line is meant for vim and emacs, so it can correctly fold and 
-   unfold functions in source code. See the corresponding marks just before 
-   function definition, where the functions purpose is also documented. Please 
-   follow this convention for the convenience of others editing your code.
-*/
 
 
 /*
