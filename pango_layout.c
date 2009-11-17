@@ -219,6 +219,51 @@ PHP_FUNCTION(pango_cairo_show_layout)
 }
 /* }}} */
 
+
+/* {{{ proto void pango_layout_set_width(PangoLayout layout, long width)
+ 	   proto void PangoLayout::setWidth(long width)
+	   Sets the width of the layout. */
+PHP_FUNCTION(pango_layout_set_width)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	const char *width;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &width) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_width(layout_object->layout, width);
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_set_height(PangoLayout layout, long height)
+ 	   proto void PangoLayout::setHeight(long height)
+	   Sets the height of the layout. */
+PHP_FUNCTION(pango_layout_set_height)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	const char *height;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &height) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_height(layout_object->layout, height);
+}
+
+/* }}} */
+
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
 {
@@ -264,6 +309,8 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setWidth, pango_layout_set_width, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setHeight, pango_layout_set_height, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
