@@ -42,6 +42,12 @@ extern zend_object_handlers pango_std_object_handlers;
 #include "TSRM.h"
 #endif
 
+/* for PHP 5.2 */
+#ifndef zend_parse_parameters_none
+#define zend_parse_parameters_none()                                        \
+    zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "")
+#endif
+
 #include <pango/pango.h>
 #include <pango/pangocairo.h>
 #include "php_cairo_api.h"

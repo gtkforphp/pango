@@ -137,7 +137,7 @@ PHP_FUNCTION(pango_layout_get_text)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	if(text = pango_layout_get_text(layout_object->layout)) {
-		RETURN_STRING(text, 1);
+		RETURN_STRING((char *)text, 1);
 	}
 	RETURN_FALSE;
 }
@@ -227,7 +227,7 @@ PHP_FUNCTION(pango_layout_set_width)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	const char *width;
+	long width;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
 	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &width) == FAILURE) {
@@ -249,7 +249,7 @@ PHP_FUNCTION(pango_layout_set_height)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	const char *height;
+	long height;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
 	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &height) == FAILURE) {
