@@ -219,6 +219,82 @@ PHP_FUNCTION(pango_cairo_show_layout)
 }
 /* }}} */
 
+/* {{{ proto void pango_layout_get_width(PangoLayout layout, long width)
+ 	   proto void PangoLayout::getWidth(long width)
+	   Sets the width of the layout. */
+PHP_FUNCTION(pango_layout_get_width)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long width;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	if(width = pango_layout_get_width(layout_object->layout)) {
+		RETURN_LONG(width);
+	}
+	RETURN_FALSE;
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_get_height(PangoLayout layout, long height)
+ 	   proto void PangoLayout::getHeight(long height)
+	   Sets the height of the layout. */
+PHP_FUNCTION(pango_layout_get_height)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long height;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	if(height = pango_layout_get_height(layout_object->layout)) {
+		RETURN_LONG(height);
+	}
+	RETURN_FALSE;
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_get_size(PangoLayout layout)
+ 	   proto void PangoLayout::getHeight()
+	   Sets the size of the layout. */
+PHP_FUNCTION(pango_layout_get_size)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long height = 0, width = 0;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_get_size(layout_object->layout, &width, &height);
+
+	array_init(return_value);
+	add_assoc_double(return_value, "width", width);
+	add_assoc_double(return_value, "height", height);
+}
 
 /* {{{ proto void pango_layout_set_width(PangoLayout layout, long width)
  	   proto void PangoLayout::setWidth(long width)
@@ -260,6 +336,29 @@ PHP_FUNCTION(pango_layout_set_height)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	pango_layout_set_height(layout_object->layout, height);
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_set_font_description(PangoLayout layout, long font_description)
+ 	   proto void PangoLayout::setHeight(long font_description)
+	   Sets the font_description of the layout. */
+PHP_FUNCTION(pango_layout_set_font_description)
+{
+	zval *layout_zval = NULL, *fontdesc_zval = NULL;
+	pango_layout_object *layout_object;
+	pango_fontdesc_object *fontdesc_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", &layout_zval, pango_ce_pangolayout, &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_layout_set_font_description(layout_object->layout, fontdesc_object->fontdesc);
 }
 
 /* }}} */
@@ -308,11 +407,15 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME(PangoLayout, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getHeight, pango_layout_get_height, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getSize, pango_layout_get_size, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWidth, pango_layout_set_width, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setHeight, pango_layout_set_height, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setFontDescription, pango_layout_set_font_description, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

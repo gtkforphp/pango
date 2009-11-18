@@ -27,6 +27,7 @@ extern zend_module_entry pango_module_entry;
 #define phpext_pango_ptr &pango_module_entry
 
 extern zend_class_entry *pango_ce_pangoexception;
+extern zend_class_entry *pango_ce_pangofontdescription;
 
 extern zend_object_handlers pango_std_object_handlers;
 
@@ -88,8 +89,15 @@ PHP_FUNCTION(pango_cairo_show_layout);
 PHP_FUNCTION(pango_layout_set_text);
 PHP_FUNCTION(pango_layout_get_text);
 PHP_FUNCTION(pango_layout_set_markup);
+PHP_FUNCTION(pango_layout_get_width);
+PHP_FUNCTION(pango_layout_get_height);
+PHP_FUNCTION(pango_layout_get_size);
 PHP_FUNCTION(pango_layout_set_width);
 PHP_FUNCTION(pango_layout_set_height);
+PHP_FUNCTION(pango_layout_set_font_description);
+
+/* PangoFontDescription functions */
+PHP_FUNCTION(pango_font_description_new);
 
 /* 
   	Declare any global variables you may need between the BEGIN
@@ -155,6 +163,19 @@ ZEND_END_MODULE_GLOBALS(pango)
         php_pango_throw_exception(status TSRMLS_CC); \
     }
 
+
+/* refcount macros */
+#ifndef Z_ADDREF_P
+#define Z_ADDREF_P(pz)                (pz)->refcount++
+#endif
+
+#ifndef Z_DELREF_P
+#define Z_DELREF_P(pz)                (pz)->refcount--
+#endif
+
+#ifndef Z_SET_REFCOUNT_P
+#define Z_SET_REFCOUNT_P(pz, rc)      (pz)->refcount = rc
+#endif
 
 #endif	/* PHP_PANGO_H */
 
