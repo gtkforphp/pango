@@ -65,7 +65,7 @@ PHP_FUNCTION(pango_version_string)
 const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_version, NULL)
 	PHP_FE(pango_version_string, NULL)
-	PHP_FE(pango_cairo_create_layout, NULL)
+	PHP_FE(pango_layout_new, NULL)
 	PHP_FE(pango_cairo_update_layout, NULL)
 	PHP_FE(pango_cairo_show_layout, NULL)
 	PHP_FE(pango_layout_set_text, NULL)
@@ -127,6 +127,7 @@ PHP_MINIT_FUNCTION(pango)
 	REGISTER_PANGO_LONG_CONST("SCALE", PANGO_SCALE);
 
 	PHP_MINIT(pango_error)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(pango_context)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(pango_layout)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(pango_font)(INIT_FUNC_ARGS_PASSTHRU);
 

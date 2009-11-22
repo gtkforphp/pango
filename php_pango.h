@@ -27,6 +27,8 @@ extern zend_module_entry pango_module_entry;
 #define phpext_pango_ptr &pango_module_entry
 
 extern zend_class_entry *pango_ce_pangoexception;
+
+/* TODO: Move this elsewhere */
 extern zend_class_entry *pango_ce_pangofontdescription;
 
 extern zend_object_handlers pango_std_object_handlers;
@@ -42,6 +44,8 @@ extern zend_object_handlers pango_std_object_handlers;
 #ifdef ZTS
 #include "TSRM.h"
 #endif
+
+PHP_PANGO_API extern zend_class_entry *php_pango_get_context_ce();
 
 /* for PHP 5.2 */
 #ifndef zend_parse_parameters_none
@@ -63,6 +67,7 @@ typedef struct _pango_layout_object {
 	zend_object std;
 	PangoLayout *layout;
 	zval *cairo_context;
+	zval *pango_context;
 } pango_layout_object;
 
 typedef struct _pango_fontdesc_object {
@@ -76,6 +81,7 @@ PHP_MSHUTDOWN_FUNCTION(pango);
 PHP_MINFO_FUNCTION(pango);
 
 PHP_MINIT_FUNCTION(pango_error);
+PHP_MINIT_FUNCTION(pango_context);
 PHP_MINIT_FUNCTION(pango_layout);
 PHP_MINIT_FUNCTION(pango_font);
 
@@ -83,9 +89,10 @@ PHP_FUNCTION(pango_version);
 PHP_FUNCTION(pango_version_string);
 
 /* PangoLayout functions */
-PHP_FUNCTION(pango_cairo_create_layout);
+PHP_FUNCTION(pango_layout_new);
 PHP_FUNCTION(pango_cairo_update_layout);
 PHP_FUNCTION(pango_cairo_show_layout);
+PHP_FUNCTION(pango_layout_get_context);
 PHP_FUNCTION(pango_layout_set_text);
 PHP_FUNCTION(pango_layout_get_text);
 PHP_FUNCTION(pango_layout_set_markup);

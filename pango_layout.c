@@ -25,42 +25,6 @@
 
 zend_class_entry *pango_ce_pangolayout;
 
-/* {{{ proto pango_layout_object_new
-   Creates a PangoLayout based on the CairoContext object */
-
-PHP_FUNCTION(pango_cairo_create_layout)
-{
-	zval *context_zval = NULL;
-	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
-	cairo_context_object *context_object;
-	pango_layout_object *layout_object;
-
-	PHP_PANGO_ERROR_HANDLING(TRUE)
-	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &context_zval, cairo_ce_cairocontext) == FAILURE)
-	{
-		PHP_PANGO_RESTORE_ERRORS(TRUE)
-		return;
-	}
-	PHP_PANGO_RESTORE_ERRORS(TRUE)
-
-	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
-
-	object_init_ex(return_value, pango_ce_pangolayout);
-	layout_object = (pango_layout_object *)zend_object_store_get_object(return_value TSRMLS_CC);
-	layout_object->layout = pango_cairo_create_layout(context_object->context);
-	
-	if(layout_object->layout == NULL) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not create the Pango layout");
-		return;
-	}
-	
-	/* We may want this later, so reference it and store */
-	layout_object->cairo_context = context_zval;
-	Z_ADDREF_P(context_zval);
-}
-
-/* }}} */
-
 /* {{{ proto PangoLayout::__construct(CairoContext cr)
    Creates a PangoLayout based on the CairoContext object */
 
@@ -94,6 +58,87 @@ PHP_METHOD(PangoLayout, __construct)
 	Z_ADDREF_P(context_zval);
 }
 
+/* }}} */
+
+/* {{{ proto pango_layout_new(CairoContext cr)
+   Creates a PangoLayout based on the CairoContext object */
+
+PHP_FUNCTION(pango_layout_new)
+{
+	zval *context_zval = NULL;
+	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
+	cairo_context_object *context_object;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(TRUE)
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "O", &context_zval, cairo_ce_cairocontext) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(TRUE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(TRUE)
+
+	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+
+	object_init_ex(return_value, pango_ce_pangolayout);
+	layout_object = (pango_layout_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	layout_object->layout = pango_cairo_create_layout(context_object->context);
+	
+	if(layout_object->layout == NULL) {
+		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not create the Pango layout");
+		return;
+	}
+	
+	/* We may want this later, so reference it and store */
+	layout_object->cairo_context = context_zval;
+	Z_ADDREF_P(context_zval);
+}
+
+
+/* }}} */
+
+/* {{{ proto PangoContext PangoLayout::getContext()
+   proto PangoContext pango_layout_get_context()
+   Return the PangoContext for the current layout */
+PHP_FUNCTION(pango_layout_get_context)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	pango_context_object *context_object;
+	PangoContext *context;	
+	zend_class_entry *ce;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	context = pango_layout_get_context(layout_object->layout);
+
+	/* Have we already got the context object and cached it? */
+	if(layout_object->pango_context) {		
+		zval_dtor(return_value);
+		*return_value = *layout_object->pango_context;
+		zval_copy_ctor(return_value);
+		Z_SET_REFCOUNT_P(return_value, 1);
+	} else {
+		/* We haven't already got one, let's make one */
+		ce = php_pango_get_context_ce();
+		object_init_ex(return_value, ce);
+	}
+
+	    /* Get the context_object and replace the internal context pointer with what we fetched (should be the same) */
+    context_object = (pango_context_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+    /* if there IS a value in context, destroy it cause we're getting a new one */
+    if (context_object->context != NULL) {
+		g_object_unref(context_object->context);
+    }    
+    /* Grab the context properly */
+    context_object->context = context;
+    g_object_ref(context_object->context);
+}
 /* }}} */
 
 /* {{{ proto void pango_layout_set_text(PangoLayout layout, string text)
@@ -296,6 +341,8 @@ PHP_FUNCTION(pango_layout_get_size)
 	add_assoc_double(return_value, "height", height);
 }
 
+/* }}} */
+
 /* {{{ proto void pango_layout_set_width(PangoLayout layout, long width)
  	   proto void PangoLayout::setWidth(long width)
 	   Sets the width of the layout. */
@@ -405,6 +452,7 @@ static zend_object_value pango_layout_object_new(zend_class_entry *ce TSRMLS_DC)
 /* {{{ pango_layout_class_functions */
 const zend_function_entry pango_layout_methods[] = {
 	PHP_ME(PangoLayout, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
+	PHP_ME_MAPPING(getContext, pango_layout_get_context, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
@@ -412,7 +460,7 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(getSize, pango_layout_get_size, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWidth, pango_layout_set_width, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setHeight, pango_layout_set_height, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING(getMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setFontDescription, pango_layout_set_font_description, NULL, ZEND_ACC_PUBLIC)
