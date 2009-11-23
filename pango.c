@@ -97,7 +97,7 @@ zend_module_entry pango_module_entry = {
 	NULL,
 	PHP_MINFO(pango),
 #if ZEND_MODULE_API_NO >= 20010901
-	"0.1", /* Replace with version number for your extension */
+	PHP_PANGO_VERSION,
 #endif
 	STANDARD_MODULE_PROPERTIES
 };
