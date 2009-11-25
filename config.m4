@@ -23,7 +23,7 @@ if test "$PHP_PANGO" != "no"; then
   PHP_SUBST(PANGO_SHARED_LIBADD)
   AC_DEFINE(HAVE_PANGO, 1, [ ])
 
-  PHP_NEW_EXTENSION(pango, pango.c pango_error.c pango_context.c pango_layout.c pango_font.c, $ext_shared)
+  PHP_NEW_EXTENSION(pango, pango.c pango_error.c pango_layout.c pango_font.c, $ext_shared)
 
   EXT_PANGO_HEADERS="php_pango_api.h"
 

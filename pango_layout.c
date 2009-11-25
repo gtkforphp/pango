@@ -100,6 +100,7 @@ PHP_FUNCTION(pango_layout_new)
 /* {{{ proto PangoContext PangoLayout::getContext()
    proto PangoContext pango_layout_get_context()
    Return the PangoContext for the current layout */
+/*
 PHP_FUNCTION(pango_layout_get_context)
 {
 	zval *layout_zval = NULL;
@@ -117,25 +118,25 @@ PHP_FUNCTION(pango_layout_get_context)
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	context = pango_layout_get_context(layout_object->layout);
 
-	/* Have we already got the context object and cached it? */
+	/* Have we already got the context object and cached it? * /
 	if(layout_object->pango_context) {		
 		zval_dtor(return_value);
 		*return_value = *layout_object->pango_context;
 		zval_copy_ctor(return_value);
 		Z_SET_REFCOUNT_P(return_value, 1);
 	} else {
-		/* We haven't already got one, let's make one */
+		/* We haven't already got one, let's make one * /
 		ce = php_pango_get_context_ce();
 		object_init_ex(return_value, ce);
 	}
 
-	    /* Get the context_object and replace the internal context pointer with what we fetched (should be the same) */
+	    /* Get the context_object and replace the internal context pointer with what we fetched (should be the same) * /
     context_object = (pango_context_object *)zend_object_store_get_object(return_value TSRMLS_CC);
-    /* if there IS a value in context, destroy it cause we're getting a new one */
+    /* if there IS a value in context, destroy it cause we're getting a new one * /
     if (context_object->context != NULL) {
 		g_object_unref(context_object->context);
     }    
-    /* Grab the context properly */
+    /* Grab the context properly * /
     context_object->context = context;
     g_object_ref(context_object->context);
 }
@@ -452,7 +453,7 @@ static zend_object_value pango_layout_object_new(zend_class_entry *ce TSRMLS_DC)
 /* {{{ pango_layout_class_functions */
 const zend_function_entry pango_layout_methods[] = {
 	PHP_ME(PangoLayout, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME_MAPPING(getContext, pango_layout_get_context, NULL, ZEND_ACC_PUBLIC)
+/*	PHP_ME_MAPPING(getContext, pango_layout_get_context, NULL, ZEND_ACC_PUBLIC) */
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
