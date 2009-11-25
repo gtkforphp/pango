@@ -324,7 +324,7 @@ PHP_FUNCTION(pango_layout_get_size)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	long height = 0, width = 0;
+	int height = 0, width = 0;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
 	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
@@ -338,8 +338,8 @@ PHP_FUNCTION(pango_layout_get_size)
 	pango_layout_get_size(layout_object->layout, &width, &height);
 
 	array_init(return_value);
-	add_assoc_double(return_value, "width", width);
-	add_assoc_double(return_value, "height", height);
+	add_assoc_long(return_value, "width", width);
+	add_assoc_long(return_value, "height", height);
 }
 
 /* }}} */

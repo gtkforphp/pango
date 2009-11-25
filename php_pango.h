@@ -81,7 +81,7 @@ PHP_MSHUTDOWN_FUNCTION(pango);
 PHP_MINFO_FUNCTION(pango);
 
 PHP_MINIT_FUNCTION(pango_error);
-/* PHP_MINIT_FUNCTION(pango_context); */
+PHP_MINIT_FUNCTION(pango_context);
 PHP_MINIT_FUNCTION(pango_layout);
 PHP_MINIT_FUNCTION(pango_font);
 
@@ -92,7 +92,7 @@ PHP_FUNCTION(pango_version_string);
 PHP_FUNCTION(pango_layout_new);
 PHP_FUNCTION(pango_cairo_update_layout);
 PHP_FUNCTION(pango_cairo_show_layout);
-/* PHP_FUNCTION(pango_layout_get_context); */
+PHP_FUNCTION(pango_layout_get_context);
 PHP_FUNCTION(pango_layout_set_text);
 PHP_FUNCTION(pango_layout_get_text);
 PHP_FUNCTION(pango_layout_set_markup);
