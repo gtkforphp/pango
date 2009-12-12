@@ -265,6 +265,32 @@ PHP_FUNCTION(pango_cairo_show_layout)
 }
 /* }}} */
 
+/* {{{ proto void pango_cairo_layout_path(CairoContext cr, PangoLayout layout)
+ 	   proto void PangoLayout::layoutPath(CairoContext cr) 
+	   Adds the specified text to the current path in the specified cairo context.
+	   NB: PARAMS ARE REVERSED FROM NATIVE PANGO
+	   */
+
+PHP_FUNCTION(pango_cairo_layout_path)
+{
+	zval *layout_zval = NULL, *context_zval = NULL;
+	pango_layout_object *layout_object;
+	cairo_context_object *context_object;
+	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
+	   PHP_PANGO_RESTORE_ERRORS(FALSE)
+	   return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)	
+	
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	pango_cairo_layout_path(context_object->context, layout_object->layout);
+}
+/* }}} */
+
 /* {{{ proto void pango_layout_get_width(PangoLayout layout, long width)
  	   proto void PangoLayout::getWidth(long width)
 	   Sets the width of the layout. */
@@ -464,6 +490,7 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(layoutPath, pango_cairo_layout_path, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setFontDescription, pango_layout_set_font_description, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
