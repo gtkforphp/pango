@@ -370,6 +370,117 @@ PHP_FUNCTION(pango_layout_get_size)
 
 /* }}} */
 
+/* {{{ proto void pango_layout_get_pixel_size(PangoLayout layout)
+ 	   proto void PangoLayout::getPixelSize()
+	   Gets the size of layout in pixels */
+PHP_FUNCTION(pango_layout_get_pixel_size)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	int height = 0, width = 0;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_get_pixel_size(layout_object->layout, &width, &height);
+
+	array_init(return_value);
+	add_assoc_long(return_value, "width", width);
+	add_assoc_long(return_value, "height", height);
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_get_extents(PangoLayout layout)
+ 	   proto void PangoLayout::getExtents()
+	   Gets the extents of layout in */
+PHP_FUNCTION(pango_layout_get_extents)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	int height = 0, width = 0;
+	PangoRectangle ink;
+	PangoRectangle logical;
+	zval *array;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_get_extents(layout_object->layout, &ink, &logical);
+
+	array_init(return_value);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", ink.x);
+	add_assoc_long(array, "y", ink.y);
+	add_assoc_long(array, "width", ink.width);
+	add_assoc_long(array, "height", ink.height);
+	add_assoc_zval(return_value, "ink", array);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", logical.x);
+	add_assoc_long(array, "y", logical.y);
+	add_assoc_long(array, "width", logical.width);
+	add_assoc_long(array, "height", logical.height);
+	add_assoc_zval(return_value, "logical", array);
+}
+
+/* }}} */
+
+/* {{{ proto void pango_layout_get_pixel_extents(PangoLayout layout)
+ 	   proto void PangoLayout::getPixelExtents()
+	   Gets the extents of layout in pixels */
+PHP_FUNCTION(pango_layout_get_pixel_extents)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	int height = 0, width = 0;
+	PangoRectangle ink;
+	PangoRectangle logical;
+	zval *array;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_get_pixel_extents(layout_object->layout, &ink, &logical);
+
+	array_init(return_value);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", ink.x);
+	add_assoc_long(array, "y", ink.y);
+	add_assoc_long(array, "width", ink.width);
+	add_assoc_long(array, "height", ink.height);
+	add_assoc_zval(return_value, "ink", array);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", logical.x);
+	add_assoc_long(array, "y", logical.y);
+	add_assoc_long(array, "width", logical.width);
+	add_assoc_long(array, "height", logical.height);
+	add_assoc_zval(return_value, "logical", array);
+}
+
+/* }}} */
+
 /* {{{ proto void pango_layout_set_width(PangoLayout layout, long width)
  	   proto void PangoLayout::setWidth(long width)
 	   Sets the width of the layout. */
@@ -485,6 +596,9 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getHeight, pango_layout_get_height, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getSize, pango_layout_get_size, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getPixelSize, pango_layout_get_pixel_size, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getExtents, pango_layout_get_extents, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getPixelExtents, pango_layout_get_pixel_extents, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWidth, pango_layout_set_width, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setHeight, pango_layout_set_height, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
