@@ -708,6 +708,7 @@ PHP_MINIT_FUNCTION(pango_layout)
 
 	INIT_CLASS_ENTRY(layout_ce, "PangoLayout", pango_layout_methods);
 	pango_ce_pangolayout = zend_register_internal_class(&layout_ce TSRMLS_CC);
+	pango_ce_pangolayout->create_object = pango_layout_object_new;
 	
 	INIT_CLASS_ENTRY(wrapmode_ce, "PangoWrapMode", NULL);
 	pango_ce_pangowrapmode = zend_register_internal_class(&wrapmode_ce TSRMLS_CC);
@@ -720,7 +721,6 @@ PHP_MINIT_FUNCTION(pango_layout)
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD", PANGO_WRAP_WORD);
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("CHAR", PANGO_WRAP_CHAR);
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD_CHAR", PANGO_WRAP_WORD_CHAR);
-	pango_ce_pangolayout->create_object = pango_layout_object_new;
 
 	return SUCCESS;
 }
