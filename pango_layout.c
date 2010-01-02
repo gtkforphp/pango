@@ -24,6 +24,7 @@
 #include "php_pango.h"
 
 zend_class_entry *pango_ce_pangolayout;
+zend_class_entry *pango_ce_pangowrapmode;
 
 /* {{{ proto PangoLayout::__construct(CairoContext cr)
    Creates a PangoLayout based on the CairoContext object */
@@ -548,6 +549,91 @@ PHP_FUNCTION(pango_layout_set_font_description)
 
 /* }}} */
 
+/* {{{ proto void pango_layout_set_justify(PangoLayout layout, bool justify)
+ 	   proto void PangoLayout::setJustify(bool justify)
+	   Sets whether each line should be justified. */
+PHP_FUNCTION(pango_layout_set_justify)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	zend_bool justify;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ob", &layout_zval, pango_ce_pangolayout, &justify) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_justify(layout_object->layout, justify);
+}
+
+/* }}} */
+
+/* {{{ proto bool pango_layout_get_justify(PangoLayout layout)
+ 	   proto bool PangoLayout::getJustify(void)
+	   Returns whether text will be justified or not in the current layout */
+PHP_FUNCTION(pango_layout_get_justify)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	zend_bool justify;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_BOOL(pango_layout_get_justify(layout_object->layout));
+}
+/* }}} */
+
+/* {{{ proto void pango_layout_set_wrap(PangoLayout layout, bool wrap)
+ 	   proto void PangoLayout::setWrap(bool wrap)
+	   Sets how each line should be wrapped. */
+PHP_FUNCTION(pango_layout_set_wrap)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long wrap;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &wrap) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_wrap(layout_object->layout, wrap);
+}
+
+/* }}} */
+
+/* {{{ proto bool pango_layout_get_wrap(PangoLayout layout)
+ 	   proto bool PangoLayout::getWrap(void)
+	   Returns how text will be wrapped or not in the current layout */
+PHP_FUNCTION(pango_layout_get_wrap)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_wrap(layout_object->layout));
+}
+/* }}} */
+
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
 {
@@ -606,6 +692,10 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(layoutPath, pango_cairo_layout_path, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setFontDescription, pango_layout_set_font_description, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setJustify, pango_layout_set_justify, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getJustify, pango_layout_get_justify, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setWrap, pango_layout_set_wrap, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getWrap, pango_layout_get_wrap, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
@@ -614,9 +704,22 @@ const zend_function_entry pango_layout_methods[] = {
 PHP_MINIT_FUNCTION(pango_layout)
 {
 	zend_class_entry layout_ce;
+	zend_class_entry wrapmode_ce;
 
 	INIT_CLASS_ENTRY(layout_ce, "PangoLayout", pango_layout_methods);
 	pango_ce_pangolayout = zend_register_internal_class(&layout_ce TSRMLS_CC);
+	
+	INIT_CLASS_ENTRY(wrapmode_ce, "PangoWrapMode", NULL);
+	pango_ce_pangowrapmode = zend_register_internal_class(&wrapmode_ce TSRMLS_CC);
+	pango_ce_pangowrapmode->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
+
+#define REGISTER_PANGO_WRAPMODE_LONG_CONST(const_name, value) \
+	zend_declare_class_constant_long(pango_ce_pangowrapmode, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
+
+	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD", PANGO_WRAP_WORD);
+	REGISTER_PANGO_WRAPMODE_LONG_CONST("CHAR", PANGO_WRAP_CHAR);
+	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD_CHAR", PANGO_WRAP_WORD_CHAR);
 	pango_ce_pangolayout->create_object = pango_layout_object_new;
 
 	return SUCCESS;

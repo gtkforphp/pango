@@ -105,6 +105,10 @@ PHP_FUNCTION(pango_layout_get_pixel_extents);
 PHP_FUNCTION(pango_layout_set_width);
 PHP_FUNCTION(pango_layout_set_height);
 PHP_FUNCTION(pango_layout_set_font_description);
+PHP_FUNCTION(pango_layout_get_justify);
+PHP_FUNCTION(pango_layout_set_justify);
+PHP_FUNCTION(pango_layout_get_wrap);
+PHP_FUNCTION(pango_layout_set_wrap);
 
 /* PangoFontDescription functions */
 PHP_FUNCTION(pango_font_description_new);
