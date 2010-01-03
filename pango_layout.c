@@ -592,7 +592,7 @@ PHP_FUNCTION(pango_layout_get_justify)
 }
 /* }}} */
 
-/* {{{ proto void pango_layout_set_wrap(PangoLayout layout, bool wrap)
+/* {{{ proto void pango_layout_set_wrap(PangoLayout layout, long wrap)
  	   proto void PangoLayout::setWrap(bool wrap)
 	   Sets how each line should be wrapped. */
 PHP_FUNCTION(pango_layout_set_wrap)
@@ -631,6 +631,48 @@ PHP_FUNCTION(pango_layout_get_wrap)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	RETURN_LONG(pango_layout_get_wrap(layout_object->layout));
+}
+/* }}} */
+
+/* {{{ proto void pango_layout_set_indent(PangoLayout layout, int indent)
+ 	   proto void PangoLayout::setWrap(bool indent)
+	   Sets how far each paragraph should be indented. */
+PHP_FUNCTION(pango_layout_set_indent)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long indent;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &indent) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_indent(layout_object->layout, indent);
+}
+
+/* }}} */
+
+/* {{{ proto bool pango_layout_get_indent(PangoLayout layout)
+ 	   proto bool PangoLayout::getWrap(void)
+	   Returns how text will be indentped or not in the current layout */
+PHP_FUNCTION(pango_layout_get_indent)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_indent(layout_object->layout));
 }
 /* }}} */
 
@@ -696,6 +738,8 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(getJustify, pango_layout_get_justify, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWrap, pango_layout_set_wrap, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWrap, pango_layout_get_wrap, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setIndent, pango_layout_set_indent, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getIndent, pango_layout_get_indent, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

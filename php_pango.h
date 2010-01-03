@@ -109,6 +109,8 @@ PHP_FUNCTION(pango_layout_get_justify);
 PHP_FUNCTION(pango_layout_set_justify);
 PHP_FUNCTION(pango_layout_get_wrap);
 PHP_FUNCTION(pango_layout_set_wrap);
+PHP_FUNCTION(pango_layout_get_indent);
+PHP_FUNCTION(pango_layout_set_indent);
 
 /* PangoFontDescription functions */
 PHP_FUNCTION(pango_font_description_new);
