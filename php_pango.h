@@ -45,7 +45,7 @@ extern zend_object_handlers pango_std_object_handlers;
 #include "TSRM.h"
 #endif
 
-/* PHP_PANGO_API extern zend_class_entry *php_pango_get_context_ce(); */
+PHP_PANGO_API extern zend_class_entry *php_pango_get_context_ce(); 
 
 /* for PHP 5.2 */
 #ifndef zend_parse_parameters_none

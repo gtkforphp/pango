@@ -23,6 +23,8 @@
 #include "php.h"
 #include "php_pango.h"
 
+#include "zend_exceptions.h"
+
 zend_class_entry *pango_ce_pangofontdescription;
 zend_class_entry *pango_ce_pangostyle;
 zend_class_entry *pango_ce_pangoweight;

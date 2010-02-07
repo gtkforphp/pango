@@ -23,6 +23,8 @@
 #include "php.h"
 #include "php_pango.h"
 
+#include "zend_exceptions.h"
+
 zend_class_entry *pango_ce_pangolayout;
 zend_class_entry *pango_ce_pangowrapmode;
 
@@ -183,7 +185,7 @@ PHP_FUNCTION(pango_layout_get_text)
 	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	if(text = pango_layout_get_text(layout_object->layout)) {
+	if((text = pango_layout_get_text(layout_object->layout))) {
 		RETURN_STRING((char *)text, 1);
 	}
 	RETURN_FALSE;
@@ -211,7 +213,7 @@ PHP_FUNCTION(pango_layout_set_markup)
 	pango_layout_set_markup(layout_object->layout, markup, markup_len);
 }
 
-/* {{{ proto void pango_cairo_context_changed(PangoLayout layout)
+/* {{{ proto void pango_layout_context_changed(PangoLayout layout)
  	   proto void PangoLayout::contextChanged() 
 	   Updates the private PangoContext of a PangoLayout to match the current transformation 
 	   and target surface of a Cairo context. 
@@ -220,18 +222,18 @@ PHP_FUNCTION(pango_layout_set_markup)
 
 PHP_FUNCTION(pango_layout_context_changed)
 {
-	zval *layout_zval = NULL, *context_zval = NULL;
+	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
-	if(zend_parse_method_parameters_none() == FAILURE) {
+	if(zend_parse_parameters_none() == FAILURE) {
 	   PHP_PANGO_RESTORE_ERRORS(FALSE)
 	   return;
 	}
 	PHP_PANGO_RESTORE_ERRORS(FALSE)	
 	
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	pango_cairo_context_changed(layout_object->layout);
+	pango_layout_context_changed(layout_object->layout);
 }
 /* }}} */
 
@@ -335,7 +337,7 @@ PHP_FUNCTION(pango_layout_get_width)
 	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	if(width = pango_layout_get_width(layout_object->layout)) {
+	if((width = pango_layout_get_width(layout_object->layout))) {
 		RETURN_LONG(width);
 	}
 	RETURN_FALSE;
@@ -361,7 +363,7 @@ PHP_FUNCTION(pango_layout_get_height)
 	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	if(height = pango_layout_get_height(layout_object->layout)) {
+	if((height = pango_layout_get_height(layout_object->layout))) {
 		RETURN_LONG(height);
 	}
 	RETURN_FALSE;
@@ -430,7 +432,6 @@ PHP_FUNCTION(pango_layout_get_extents)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	int height = 0, width = 0;
 	PangoRectangle ink;
 	PangoRectangle logical;
 	zval *array;
@@ -472,7 +473,6 @@ PHP_FUNCTION(pango_layout_get_pixel_extents)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	int height = 0, width = 0;
 	PangoRectangle ink;
 	PangoRectangle logical;
 	zval *array;
@@ -603,7 +603,6 @@ PHP_FUNCTION(pango_layout_get_justify)
 {
 	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
-	zend_bool justify;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
 	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
