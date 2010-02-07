@@ -68,6 +68,7 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_new, NULL)
 	PHP_FE(pango_cairo_update_layout, NULL)
 	PHP_FE(pango_cairo_show_layout, NULL)
+	PHP_FE(pango_layout_get_context, NULL)
 	PHP_FE(pango_layout_set_text, NULL)
 	PHP_FE(pango_layout_get_text, NULL)
 	PHP_FE(pango_layout_set_markup, NULL)
@@ -84,8 +85,10 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_justify, NULL)
 	PHP_FE(pango_layout_set_wrap, NULL)
 	PHP_FE(pango_layout_get_wrap, NULL)
+	PHP_FE(pango_layout_is_wrapped, NULL)
 	PHP_FE(pango_layout_set_indent, NULL)
 	PHP_FE(pango_layout_get_indent, NULL)
+	PHP_FE(pango_layout_context_changed, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */
 	{NULL, NULL, NULL}	
@@ -163,7 +166,7 @@ PHP_MINFO_FUNCTION(pango)
 	php_info_print_table_start();
 	php_info_print_table_header(2, "Pango text rendering support", "enabled");
 	php_info_print_table_colspan_header(2,
-#ifdef COMPILE_DL_CAIRO
+#ifdef COMPILE_DL_PANGO
 			"compiled as dynamic module"
 #else
 			"compiled as static module"

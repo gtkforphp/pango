@@ -1,5 +1,10 @@
 Lots.
 
+Complete adding PangoLayout methods
+Handle tab stops - map to associative arrays?
+add classes for PangoFont, PangoFontFace and allow access to those methods
+Add PangoContext methods
+
 * arginfo needs to be added basically everywhere
 * Tests
 * Docs
