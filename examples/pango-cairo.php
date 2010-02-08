@@ -21,7 +21,7 @@ function draw_text($c) {
         $l->updateLayout($c);
         $size = $l->getSize();
         $c->moveTo( - ((double)$size['width'] / 2048), - RADIUS);
-        $l->showLayout($c);
+        $l->showLayout();
         $c->restore();
     }
 }

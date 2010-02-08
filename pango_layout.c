@@ -255,14 +255,21 @@ PHP_FUNCTION(pango_cairo_update_layout)
 	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
-	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O|O", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
 	   PHP_PANGO_RESTORE_ERRORS(FALSE)
 	   return;
 	}
 	PHP_PANGO_RESTORE_ERRORS(FALSE)	
 	
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	
+	/* If the user supplies a context, use that, otherwise get the one from the layout */
+	if(context_zval) {
+		context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	} else {
+		context_object = (cairo_context_object *)zend_object_store_get_object(layout_object->cairo_context TSRMLS_CC);
+	}
+
 	pango_cairo_update_layout(context_object->context, layout_object->layout);
 }
 /* }}} */
@@ -281,14 +288,21 @@ PHP_FUNCTION(pango_cairo_show_layout)
 	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
-	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O|O", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
 	   PHP_PANGO_RESTORE_ERRORS(FALSE)
 	   return;
 	}
 	PHP_PANGO_RESTORE_ERRORS(FALSE)	
 	
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+
+	/* If the user supplies a context, use that, otherwise get the one from the layout */
+	if(context_zval) {
+		context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	} else {
+		context_object = (cairo_context_object *)zend_object_store_get_object(layout_object->cairo_context TSRMLS_CC);
+	}
+
 	pango_cairo_show_layout(context_object->context, layout_object->layout);
 }
 /* }}} */
@@ -307,14 +321,21 @@ PHP_FUNCTION(pango_cairo_layout_path)
 	zend_class_entry *cairo_ce_cairocontext = php_cairo_get_context_ce();
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
-	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O|O", &layout_zval, pango_ce_pangolayout, &context_zval, cairo_ce_cairocontext) == FAILURE) {
 	   PHP_PANGO_RESTORE_ERRORS(FALSE)
 	   return;
 	}
 	PHP_PANGO_RESTORE_ERRORS(FALSE)	
 	
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
-	context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	
+	/* If the user supplies a context, use that, otherwise get the one from the layout */
+	if(context_zval) {
+		context_object = (cairo_context_object *)zend_object_store_get_object(context_zval TSRMLS_CC);
+	} else {
+		context_object = (cairo_context_object *)zend_object_store_get_object(layout_object->cairo_context TSRMLS_CC);
+	}
+	
 	pango_cairo_layout_path(context_object->context, layout_object->layout);
 }
 /* }}} */
