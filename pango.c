@@ -88,6 +88,11 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_is_wrapped, NULL)
 	PHP_FE(pango_layout_set_indent, NULL)
 	PHP_FE(pango_layout_get_indent, NULL)
+ 	PHP_FE(pango_layout_set_spacing, NULL)
+ 	PHP_FE(pango_layout_get_spacing, NULL)
+	PHP_FE(pango_layout_get_ellipsize, NULL)
+	PHP_FE(pango_layout_get_ellipsize, NULL)
+	PHP_FE(pango_layout_is_ellipsized, NULL)
 	PHP_FE(pango_layout_context_changed, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */

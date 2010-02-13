@@ -27,6 +27,7 @@
 
 zend_class_entry *pango_ce_pangolayout;
 zend_class_entry *pango_ce_pangowrapmode;
+zend_class_entry *pango_ce_pangoellipsizemode;
 
 /* {{{ proto PangoLayout::__construct(CairoContext cr)
    Creates a PangoLayout based on the CairoContext object */
@@ -193,7 +194,7 @@ PHP_FUNCTION(pango_layout_get_text)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_markup(PangoLayout layout, string markup)
- 	   proto void PangoLayout::setText(string markup)
+ 	   proto void PangoLayout::setMarkup(string markup)
 	   Sets the markup of the layout. */
 PHP_FUNCTION(pango_layout_set_markup)
 {
@@ -237,6 +238,40 @@ PHP_FUNCTION(pango_layout_context_changed)
 }
 /* }}} */
 
+
+/* }}} */
+
+
+#if 0
+/* Need to work out how to handle multibyte characters here */
+/* {{{ proto void pango_layout_set_markup(PangoLayout layout, string markup)
+ 	   proto void PangoLayout::setText(string markup)
+	   Sets the markup of the layout with accelerator markers. */
+PHP_FUNCTION(pango_layout_set_markup_with_accel)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	const char *markup;
+	const char *accel_marker;
+	long markup_len = 0, accel_marker_len = 0, first_accel = 0;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Oss", &layout_zval, pango_ce_pangolayout, &markup, &markup_len, &accel_marker, &accel_marker_len) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	if(accel_marker_len > 0) {
+		pango_layout_set_markup_with_accel(
+				layout_object->layout, markup, markup_len, accel_marker[0], &first_accel);				
+	} else {
+		pango_layout_set_markup_with_accel(layout_object->layout, markup, markup_len, 0, &first_accel);
+	}
+	RETURN_LONG(first_accel);
+}
+#endif
 
 /* }}} */
 
@@ -741,6 +776,110 @@ PHP_FUNCTION(pango_layout_get_indent)
 }
 /* }}} */
 
+/* {{{ proto void pango_layout_set_spacing(PangoLayout layout, int spacing)
+ 	   proto void PangoLayout::setWrap(bool spacing)
+	   Sets the line spacing for the paragraph */
+PHP_FUNCTION(pango_layout_set_spacing)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long spacing;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &spacing) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_spacing(layout_object->layout, spacing);
+}
+
+/* }}} */
+
+/* {{{ proto bool pango_layout_get_spacing(PangoLayout layout)
+ 	   proto bool PangoLayout::getWrap(void)
+	   Returns the spacing for the current layout */
+PHP_FUNCTION(pango_layout_get_spacing)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_spacing(layout_object->layout));
+}
+/* }}} */
+
+/* {{{ proto void pango_layout_set_ellipsize(PangoLayout layout, long ellipsize)
+ 	   proto void PangoLayout::setWrap(long ellipsize)
+	   Sets the ellipsize mode for the layout */
+PHP_FUNCTION(pango_layout_set_ellipsize)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	long ellipsize;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &ellipsize) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	pango_layout_set_ellipsize(layout_object->layout, ellipsize);
+}
+
+/* }}} */
+
+/* {{{ proto long pango_layout_get_ellipsize(PangoLayout layout)
+ 	   proto long PangoLayout::getWrap(void)
+	   Returns the ellipsize for the current layout */
+PHP_FUNCTION(pango_layout_get_ellipsize)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_ellipsize(layout_object->layout));
+}
+/* }}} */
+
+/* {{{ proto bool pango_layout_is_ellipsized(PangoLayout layout)
+ 	   proto bool PangoLayout::getWrap(void)
+	   Returns the ellipsize for the current layout */
+PHP_FUNCTION(pango_layout_is_ellipsized)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_BOOL(pango_layout_is_ellipsized(layout_object->layout));
+}
+/* }}} */
+
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
 {
@@ -806,6 +945,11 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(isWrapped, pango_layout_is_wrapped, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setIndent, pango_layout_set_indent, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getIndent, pango_layout_get_indent, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(setSpacing, pango_layout_set_spacing, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(getSpacing, pango_layout_get_spacing, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(setEllipsize, pango_layout_set_ellipsize, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(getEllipsize, pango_layout_get_ellipsize, NULL, ZEND_ACC_PUBLIC)
+ 	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(contextChanged, pango_layout_context_changed, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
@@ -816,6 +960,7 @@ PHP_MINIT_FUNCTION(pango_layout)
 {
 	zend_class_entry layout_ce;
 	zend_class_entry wrapmode_ce;
+	zend_class_entry ellipsizemode_ce;
 
 	INIT_CLASS_ENTRY(layout_ce, "PangoLayout", pango_layout_methods);
 	pango_ce_pangolayout = zend_register_internal_class(&layout_ce TSRMLS_CC);
@@ -832,6 +977,19 @@ PHP_MINIT_FUNCTION(pango_layout)
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD", PANGO_WRAP_WORD);
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("CHAR", PANGO_WRAP_CHAR);
 	REGISTER_PANGO_WRAPMODE_LONG_CONST("WORD_CHAR", PANGO_WRAP_WORD_CHAR);
+
+	INIT_CLASS_ENTRY(ellipsizemode_ce, "PangoEllipsizeMode", NULL);
+	pango_ce_pangoellipsizemode = zend_register_internal_class(&ellipsizemode_ce TSRMLS_CC);
+	pango_ce_pangoellipsizemode->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
+
+#define REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST(const_name, value) \
+	zend_declare_class_constant_long(pango_ce_pangoellipsizemode, const_name, sizeof(const_name)-1, (long)value TSRMLS_CC); \
+	REGISTER_LONG_CONSTANT(#value,  value,  CONST_CS | CONST_PERSISTENT);
+
+	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("NONE", PANGO_ELLIPSIZE_NONE);
+	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("START", PANGO_ELLIPSIZE_START);
+	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("MIDDLE", PANGO_ELLIPSIZE_MIDDLE);
+	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("END", PANGO_ELLIPSIZE_END);
 
 	return SUCCESS;
 }

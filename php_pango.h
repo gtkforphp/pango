@@ -75,6 +75,11 @@ typedef struct _pango_fontdesc_object {
 	PangoFontDescription *fontdesc;
 } pango_fontdesc_object;
 
+typedef struct _pango_item_object {
+	zend_object std;
+	PangoItem *item;
+} pango_item_object;
+
 PHP_MINIT_FUNCTION(pango);
 PHP_MSHUTDOWN_FUNCTION(pango);
 PHP_MINFO_FUNCTION(pango);
@@ -112,6 +117,11 @@ PHP_FUNCTION(pango_layout_set_wrap);
 PHP_FUNCTION(pango_layout_is_wrapped);
 PHP_FUNCTION(pango_layout_get_indent);
 PHP_FUNCTION(pango_layout_set_indent);
+PHP_FUNCTION(pango_layout_get_spacing);
+PHP_FUNCTION(pango_layout_set_spacing);
+PHP_FUNCTION(pango_layout_get_ellipsize);
+PHP_FUNCTION(pango_layout_get_ellipsize);
+PHP_FUNCTION(pango_layout_is_ellipsized);
 PHP_FUNCTION(pango_layout_context_changed);
 
 /* PangoFontDescription functions */
