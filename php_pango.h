@@ -119,7 +119,7 @@ PHP_FUNCTION(pango_layout_get_indent);
 PHP_FUNCTION(pango_layout_set_indent);
 PHP_FUNCTION(pango_layout_get_spacing);
 PHP_FUNCTION(pango_layout_set_spacing);
-PHP_FUNCTION(pango_layout_get_ellipsize);
+PHP_FUNCTION(pango_layout_set_ellipsize);
 PHP_FUNCTION(pango_layout_get_ellipsize);
 PHP_FUNCTION(pango_layout_is_ellipsized);
 PHP_FUNCTION(pango_layout_context_changed);
