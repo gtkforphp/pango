@@ -32,6 +32,80 @@ PHP_PANGO_API zend_class_entry* php_pango_get_layoutline_ce()
 	return pango_ce_pangolayoutline;
 }
 
+/* {{{ proto array pango_layout_line_get_extents(PangoLayoutLine line)
+       proto array PangoLayoutLine::getExtents()
+       Get the logical and ink extents for the line */
+PHP_FUNCTION(pango_layout_line_get_extents)
+{
+    zval *layoutline_zval = NULL, *array = NULL;
+    pango_layoutline_object *layoutline_object = NULL;
+    PangoRectangle ink, logical;
+    
+    PHP_PANGO_ERROR_HANDLING(FALSE)
+    if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O",
+                &layoutline_zval, pango_ce_pangolayoutline) == FAILURE) {
+        PHP_PANGO_RESTORE_ERRORS(FALSE)
+        return;
+    }
+
+    layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
+    pango_layout_line_get_extents(layoutline_object->line, &ink, &logical);
+
+    array_init(return_value);
+    MAKE_STD_ZVAL(array);
+    array_init(array);
+	add_assoc_long(array, "x", ink.x);
+	add_assoc_long(array, "y", ink.y);
+	add_assoc_long(array, "width", ink.width);
+	add_assoc_long(array, "height", ink.height);
+	add_assoc_zval(return_value, "ink", array);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", logical.x);
+	add_assoc_long(array, "y", logical.y);
+	add_assoc_long(array, "width", logical.width);
+	add_assoc_long(array, "height", logical.height);
+	add_assoc_zval(return_value, "logical", array);
+}
+/* }}} */
+
+/* {{{ proto array pango_layout_line_get_pixel_extents(PangoLayoutLine line)
+       proto array PangoLayoutLine::getPixelExtents()
+       Get the logical and ink extents for the line, in device units */
+PHP_FUNCTION(pango_layout_line_get_pixel_extents)
+{
+    zval *layoutline_zval = NULL, *array = NULL;
+    pango_layoutline_object *layoutline_object = NULL;
+    PangoRectangle ink, logical;
+    
+    PHP_PANGO_ERROR_HANDLING(FALSE)
+    if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O",
+                &layoutline_zval, pango_ce_pangolayoutline) == FAILURE) {
+        PHP_PANGO_RESTORE_ERRORS(FALSE)
+        return;
+    }
+
+    layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
+    pango_layout_line_get_pixel_extents(layoutline_object->line, &ink, &logical);
+
+    array_init(return_value);
+    MAKE_STD_ZVAL(array);
+    array_init(array);
+	add_assoc_long(array, "x", ink.x);
+	add_assoc_long(array, "y", ink.y);
+	add_assoc_long(array, "width", ink.width);
+	add_assoc_long(array, "height", ink.height);
+	add_assoc_zval(return_value, "ink", array);
+	ALLOC_INIT_ZVAL(array);
+	array_init(array);
+	add_assoc_long(array, "x", logical.x);
+	add_assoc_long(array, "y", logical.y);
+	add_assoc_long(array, "width", logical.width);
+	add_assoc_long(array, "height", logical.height);
+	add_assoc_zval(return_value, "logical", array);
+}
+/* }}} */
+
 /* {{{ Object creation/destruction functions */
 static void pango_layoutline_object_destroy(void *object TSRMLS_DC)
 {
@@ -64,6 +138,8 @@ static zend_object_value pango_layoutline_object_new(zend_class_entry *ce TSRMLS
 
 /* {{{ pango_layout_class_functions */
 const zend_function_entry pango_layoutline_methods[] = {
+    PHP_ME_MAPPING(getExtents, pango_layout_line_get_extents, NULL, ZEND_ACC_PUBLIC) 
+    PHP_ME_MAPPING(getPixelExtents, pango_layout_line_get_pixel_extents, NULL, ZEND_ACC_PUBLIC) 
 	{NULL, NULL, NULL}
 };
 /* }}} */

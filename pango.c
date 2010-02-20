@@ -94,7 +94,13 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_ellipsize, NULL)
 	PHP_FE(pango_layout_is_ellipsized, NULL)
 	PHP_FE(pango_layout_get_lines, NULL)
+	PHP_FE(pango_layout_get_line, NULL)
+	PHP_FE(pango_layout_get_line_count, NULL)
 	PHP_FE(pango_layout_context_changed, NULL)
+
+	/* PangoLayoutLine functions */
+	PHP_FE(pango_layout_line_get_extents, NULL)
+	PHP_FE(pango_layout_line_get_pixel_extents, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */
 	{NULL, NULL, NULL}	

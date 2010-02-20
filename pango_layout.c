@@ -912,6 +912,59 @@ PHP_FUNCTION(pango_layout_get_lines)
 		add_next_index_zval(return_value, elem);
 	}
 }
+/* }}} */
+
+/* {{{ proto array pango_layout_get_line(PangoLayout layout, long line)
+	   proto array PangoLayout::getLine(long line)
+	   Returns a particular PangoLayoutLine from the layout */
+PHP_FUNCTION(pango_layout_get_line)
+{
+	zval *layout_zval = NULL, *elem = NULL;
+	pango_layout_object *layout_object;
+	pango_layoutline_object *layoutline_object;
+	PangoLayoutLine *layoutline;
+	long line_number = 0, line_count = 0;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &line_number) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+	
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	layoutline = pango_layout_get_line(layout_object->layout, line_number);
+
+	if(!layoutline) {
+		RETURN_FALSE;
+	}
+
+	object_init_ex(return_value, php_pango_get_layoutline_ce());
+	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(return_value TSRMLS_CC);
+	layoutline_object->line = layoutline;
+
+}
+
+/* {{{ proto array pango_layout_get_line_count(PangoLayout layout, long line)
+	   proto array PangoLayout::getLineCount(long line)
+	   Returns the number of PangoLayoutLines in the layout */
+PHP_FUNCTION(pango_layout_get_line_count)
+{
+	zval *layout_zval = NULL, *elem = NULL;
+	pango_layout_object *layout_object;
+	pango_layoutline_object *layoutline_object;
+	PangoLayoutLine *layoutline;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+	
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_line_count(layout_object->layout));
+}
 
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
@@ -985,6 +1038,8 @@ const zend_function_entry pango_layout_methods[] = {
  	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(contextChanged, pango_layout_context_changed, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getLines, pango_layout_get_lines, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getLine, pango_layout_get_line, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getLineCount, pango_layout_get_line_count, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
