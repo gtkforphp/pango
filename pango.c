@@ -90,9 +90,10 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_indent, NULL)
  	PHP_FE(pango_layout_set_spacing, NULL)
  	PHP_FE(pango_layout_get_spacing, NULL)
-	PHP_FE(pango_layout_get_ellipsize, NULL)
+	PHP_FE(pango_layout_set_ellipsize, NULL)
 	PHP_FE(pango_layout_get_ellipsize, NULL)
 	PHP_FE(pango_layout_is_ellipsized, NULL)
+	PHP_FE(pango_layout_get_lines, NULL)
 	PHP_FE(pango_layout_context_changed, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */
@@ -147,6 +148,7 @@ PHP_MINIT_FUNCTION(pango)
  	PHP_MINIT(pango_context)(INIT_FUNC_ARGS_PASSTHRU); 
 	PHP_MINIT(pango_layout)(INIT_FUNC_ARGS_PASSTHRU);
 	PHP_MINIT(pango_font)(INIT_FUNC_ARGS_PASSTHRU);
+	PHP_MINIT(pango_line)(INIT_FUNC_ARGS_PASSTHRU);
 
 	return SUCCESS;
 }

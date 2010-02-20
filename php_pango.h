@@ -46,6 +46,7 @@ extern zend_object_handlers pango_std_object_handlers;
 #endif
 
 PHP_PANGO_API extern zend_class_entry *php_pango_get_context_ce(); 
+PHP_PANGO_API extern zend_class_entry *php_pango_get_layoutline_ce(); 
 
 /* for PHP 5.2 */
 #ifndef zend_parse_parameters_none
@@ -79,6 +80,11 @@ typedef struct _pango_item_object {
 	zend_object std;
 	PangoItem *item;
 } pango_item_object;
+
+typedef struct _pango_layoutline_object {
+	zend_object std;
+	PangoLayoutLine *line;
+} pango_layoutline_object;
 
 PHP_MINIT_FUNCTION(pango);
 PHP_MSHUTDOWN_FUNCTION(pango);
@@ -119,9 +125,10 @@ PHP_FUNCTION(pango_layout_get_indent);
 PHP_FUNCTION(pango_layout_set_indent);
 PHP_FUNCTION(pango_layout_get_spacing);
 PHP_FUNCTION(pango_layout_set_spacing);
-PHP_FUNCTION(pango_layout_get_ellipsize);
+PHP_FUNCTION(pango_layout_set_ellipsize);
 PHP_FUNCTION(pango_layout_get_ellipsize);
 PHP_FUNCTION(pango_layout_is_ellipsized);
+PHP_FUNCTION(pango_layout_get_lines);
 PHP_FUNCTION(pango_layout_context_changed);
 
 /* PangoFontDescription functions */

@@ -819,7 +819,7 @@ PHP_FUNCTION(pango_layout_get_spacing)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_ellipsize(PangoLayout layout, long ellipsize)
- 	   proto void PangoLayout::setWrap(long ellipsize)
+ 	   proto void PangoLayout::setEllipsize(long ellipsize)
 	   Sets the ellipsize mode for the layout */
 PHP_FUNCTION(pango_layout_set_ellipsize)
 {
@@ -841,7 +841,7 @@ PHP_FUNCTION(pango_layout_set_ellipsize)
 /* }}} */
 
 /* {{{ proto long pango_layout_get_ellipsize(PangoLayout layout)
- 	   proto long PangoLayout::getWrap(void)
+ 	   proto long PangoLayout::getEllipsize(void)
 	   Returns the ellipsize for the current layout */
 PHP_FUNCTION(pango_layout_get_ellipsize)
 {
@@ -861,7 +861,7 @@ PHP_FUNCTION(pango_layout_get_ellipsize)
 /* }}} */
 
 /* {{{ proto bool pango_layout_is_ellipsized(PangoLayout layout)
- 	   proto bool PangoLayout::getWrap(void)
+ 	   proto bool PangoLayout::isEllipsized(void)
 	   Returns the ellipsize for the current layout */
 PHP_FUNCTION(pango_layout_is_ellipsized)
 {
@@ -879,6 +879,39 @@ PHP_FUNCTION(pango_layout_is_ellipsized)
 	RETURN_BOOL(pango_layout_is_ellipsized(layout_object->layout));
 }
 /* }}} */
+
+/* {{{ proto array pango_layout_get_lines(PangoLayout layout)
+	   proto array PangoLayout::getLines(void)
+	   Returns an array of PangoLayoutLines representing each line of the layout */
+PHP_FUNCTION(pango_layout_get_lines)
+{
+	zval *layout_zval = NULL, *elem = NULL;
+	pango_layout_object *layout_object;
+	pango_layoutline_object *line;
+	GSList *lines, *iter;
+	zend_class_entry *layoutline_ce;
+
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	lines = pango_layout_get_lines(layout_object->layout);
+	
+	layoutline_ce = php_pango_get_layoutline_ce();
+	array_init(return_value);
+	for(iter = lines; iter != NULL; iter = iter->next) {
+		MAKE_STD_ZVAL(elem);
+		object_init_ex(elem, layoutline_ce);
+		line = (pango_layoutline_object *)zend_object_store_get_object(elem);
+		line->line = (PangoLayoutLine *)iter->data;
+		add_next_index_zval(return_value, elem);
+	}
+}
 
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
@@ -951,6 +984,7 @@ const zend_function_entry pango_layout_methods[] = {
  	PHP_ME_MAPPING(getEllipsize, pango_layout_get_ellipsize, NULL, ZEND_ACC_PUBLIC)
  	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(contextChanged, pango_layout_context_changed, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getLines, pango_layout_get_lines, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
