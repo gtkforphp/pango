@@ -54,7 +54,7 @@ PHP_FUNCTION(pango_version_string)
 		return;
 	}
 
-	RETURN_STRING(pango_version_string(), 1);
+	RETURN_STRING((char *)pango_version_string(), 1);
 }
 /* }}} */
 
@@ -107,6 +107,12 @@ const zend_function_entry pango_functions[] = {
 };
 /* }}} */
 
+const zend_function_entry pango_methods[] = {
+	PHP_ME_MAPPING(version, pango_version, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	PHP_ME_MAPPING(versionString, pango_version_string, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+	{NULL, NULL, NULL}
+};
+
 /* {{{ pango_module_entry
  */
 zend_module_entry pango_module_entry = {
@@ -140,7 +146,7 @@ PHP_MINIT_FUNCTION(pango)
     memcpy(&pango_std_object_handlers, zend_get_std_object_handlers(), sizeof(zend_object_handlers));
     pango_std_object_handlers.clone_obj = NULL;
 
-	INIT_CLASS_ENTRY(pango_ce, "Pango", NULL);
+	INIT_CLASS_ENTRY(pango_ce, "Pango", pango_methods);
 	pango_ce_pango = zend_register_internal_class(&pango_ce TSRMLS_CC);
 	pango_ce_pango->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
