@@ -887,7 +887,6 @@ PHP_FUNCTION(pango_layout_get_lines)
 {
 	zval *layout_zval = NULL, *elem = NULL;
 	pango_layout_object *layout_object;
-	pango_layoutline_object *line;
 	GSList *lines, *iter;
 	zend_class_entry *layoutline_ce;
 
@@ -905,10 +904,7 @@ PHP_FUNCTION(pango_layout_get_lines)
 	layoutline_ce = php_pango_get_layoutline_ce();
 	array_init(return_value);
 	for(iter = lines; iter != NULL; iter = iter->next) {
-		MAKE_STD_ZVAL(elem);
-		object_init_ex(elem, layoutline_ce);
-		line = (pango_layoutline_object *)zend_object_store_get_object(elem);
-		line->line = (PangoLayoutLine *)iter->data;
+		elem = php_pango_make_layoutline_zval((PangoLayoutLine *)iter->data TSRMLS_CC);
 		add_next_index_zval(return_value, elem);
 	}
 }
@@ -939,10 +935,8 @@ PHP_FUNCTION(pango_layout_get_line)
 		RETURN_FALSE;
 	}
 
-	object_init_ex(return_value, php_pango_get_layoutline_ce());
-	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(return_value TSRMLS_CC);
-	layoutline_object->line = layoutline;
-
+	zval_dtor(return_value);
+	return_value = php_pango_make_layoutline_zval(layoutline);
 }
 
 /* {{{ proto array pango_layout_get_line_count(PangoLayout layout, long line)
