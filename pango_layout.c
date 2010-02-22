@@ -904,7 +904,7 @@ PHP_FUNCTION(pango_layout_get_lines)
 	layoutline_ce = php_pango_get_layoutline_ce();
 	array_init(return_value);
 	for(iter = lines; iter != NULL; iter = iter->next) {
-		elem = php_pango_make_layoutline_zval((PangoLayoutLine *)iter->data TSRMLS_CC);
+		elem = php_pango_make_layoutline_zval((PangoLayoutLine *)iter->data, layout_zval TSRMLS_CC);
 		add_next_index_zval(return_value, elem);
 	}
 }
@@ -915,11 +915,11 @@ PHP_FUNCTION(pango_layout_get_lines)
 	   Returns a particular PangoLayoutLine from the layout */
 PHP_FUNCTION(pango_layout_get_line)
 {
-	zval *layout_zval = NULL, *elem = NULL;
+	zval *layout_zval = NULL;
 	pango_layout_object *layout_object;
 	pango_layoutline_object *layoutline_object;
 	PangoLayoutLine *layoutline;
-	long line_number = 0, line_count = 0;
+	long line_number = 0;
 
 	PHP_PANGO_ERROR_HANDLING(FALSE)
 	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &layout_zval, pango_ce_pangolayout, &line_number) == FAILURE) {
@@ -936,7 +936,7 @@ PHP_FUNCTION(pango_layout_get_line)
 	}
 
 	zval_dtor(return_value);
-	return_value = php_pango_make_layoutline_zval(layoutline TSRMLS_CC);
+	*return_value = *php_pango_make_layoutline_zval(layoutline, layout_zval TSRMLS_CC);
 }
 
 /* {{{ proto array pango_layout_get_line_count(PangoLayout layout, long line)

@@ -101,6 +101,7 @@ const zend_function_entry pango_functions[] = {
 	/* PangoLayoutLine functions */
 	PHP_FE(pango_layout_line_get_extents, NULL)
 	PHP_FE(pango_layout_line_get_pixel_extents, NULL)
+	PHP_FE(pango_cairo_show_layout_line, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */
 	{NULL, NULL, NULL}	

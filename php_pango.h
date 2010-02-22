@@ -57,7 +57,7 @@ extern zend_object_handlers pango_std_object_handlers;
 
 PHP_PANGO_API extern zend_class_entry *php_pango_get_context_ce(); 
 PHP_PANGO_API extern zend_class_entry *php_pango_get_layoutline_ce(); 
-PHP_PANGO_API extern zval* php_pango_make_layoutline_zval(PangoLayoutLine *line TSRMLS_DC);
+PHP_PANGO_API extern zval* php_pango_make_layoutline_zval(PangoLayoutLine *line, zval *layout TSRMLS_DC);
 
 /* Objects */
 typedef struct _pango_context_object {
@@ -85,6 +85,7 @@ typedef struct _pango_item_object {
 typedef struct _pango_layoutline_object {
 	zend_object std;
 	PangoLayoutLine *line;
+	zval *layout_zval;
 } pango_layoutline_object;
 
 PHP_MINIT_FUNCTION(pango);
@@ -137,6 +138,7 @@ PHP_FUNCTION(pango_layout_context_changed);
 /* PangoLayoutLine functions */
 PHP_FUNCTION(pango_layout_line_get_extents);
 PHP_FUNCTION(pango_layout_line_get_pixel_extents);
+PHP_FUNCTION(pango_cairo_show_layout_line);
 
 /* PangoFontDescription functions */
 PHP_FUNCTION(pango_font_description_new);

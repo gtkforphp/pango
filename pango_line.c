@@ -35,7 +35,7 @@ PHP_PANGO_API zend_class_entry* php_pango_get_layoutline_ce()
 	return pango_ce_pangolayoutline;
 }
 
-PHP_PANGO_API zval* php_pango_make_layoutline_zval(PangoLayoutLine *line TSRMLS_DC)
+PHP_PANGO_API zval* php_pango_make_layoutline_zval(PangoLayoutLine *line, zval *layout TSRMLS_DC)
 {
 	zval *return_value, *length, *is_paragraph_start, *resolved_dir;
 	pango_layoutline_object *layoutline_object;
@@ -44,6 +44,12 @@ PHP_PANGO_API zval* php_pango_make_layoutline_zval(PangoLayoutLine *line TSRMLS_
 	object_init_ex(return_value, pango_ce_pangolayoutline);
 	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(return_value TSRMLS_CC);
 	layoutline_object->line = line;
+
+	/* Optionally cache the PangoLayout zval for later */
+	if(layout != NULL) {
+		Z_ADDREF_P(layout);
+		layoutline_object->layout_zval = layout;
+	}
 
 	MAKE_STD_ZVAL(length);
 	ZVAL_LONG(length, line->length);
@@ -135,12 +141,47 @@ PHP_FUNCTION(pango_layout_line_get_pixel_extents)
 }
 /* }}} */
 
+/* {{{ proto void pango_cairo_show_layout_line(PangoLayoutLine line, CairoContext context)
+	   proto void PangoLayoutLine::show([CairoContext context])
+	   Draws a PangoLayoutLine in the specified cairo context. If no context
+	   is specified, use the cached one from when the PangoLayoutLine was created */
+PHP_FUNCTION(pango_cairo_show_layout_line)
+{
+	zval *layoutline_zval = NULL, *layout_zval = NULL, *cairocontext_zval = NULL;	
+	pango_layoutline_object *layoutline_object = NULL;
+	pango_layout_object *layout_object = NULL;
+	cairo_context_object *cairocontext_object = NULL;
+	
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O|O",
+				&layoutline_zval, pango_ce_pangolayoutline,
+				&cairocontext_zval, php_cairo_get_context_ce()) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+
+	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
+
+	if(cairocontext_zval == NULL) {
+		layout_zval = layoutline_object->layout_zval;
+		layout_object = zend_object_store_get_object(layout_zval TSRMLS_CC);
+		cairocontext_zval = layout_object->cairo_context;
+	}	
+	cairocontext_object = zend_object_store_get_object(cairocontext_zval TSRMLS_CC);
+
+	pango_cairo_show_layout_line(cairocontext_object->context, layoutline_object->line);
+}
+
 /* {{{ Object creation/destruction functions */
 static void pango_layoutline_object_destroy(void *object TSRMLS_DC)
 {
 	pango_layoutline_object *layoutline = (pango_layoutline_object *)object;
 	zend_hash_destroy(layoutline->std.properties);
 	FREE_HASHTABLE(layoutline->std.properties);
+
+	if(layoutline->layout_zval != NULL) {
+		Z_DELREF_P(layoutline->layout_zval);
+	}
 
 	efree(object);
 }
@@ -196,6 +237,7 @@ static zend_object_value pango_layoutline_object_new(zend_class_entry *ce TSRMLS
 const zend_function_entry pango_layoutline_methods[] = {
 	PHP_ME_MAPPING(getExtents, pango_layout_line_get_extents, NULL, ZEND_ACC_PUBLIC) 
 	PHP_ME_MAPPING(getPixelExtents, pango_layout_line_get_pixel_extents, NULL, ZEND_ACC_PUBLIC) 
+	PHP_ME_MAPPING(show, pango_cairo_show_layout_line, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */
