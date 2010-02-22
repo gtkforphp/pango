@@ -936,7 +936,7 @@ PHP_FUNCTION(pango_layout_get_line)
 	}
 
 	zval_dtor(return_value);
-	return_value = php_pango_make_layoutline_zval(layoutline);
+	return_value = php_pango_make_layoutline_zval(layoutline TSRMLS_CC);
 }
 
 /* {{{ proto array pango_layout_get_line_count(PangoLayout layout, long line)
