@@ -35,6 +35,8 @@ PHP_PANGO_API zend_class_entry* php_pango_get_layoutline_ce()
 	return pango_ce_pangolayoutline;
 }
 
+/*  {{{ php_pango_make_layoutline_zval 
+	Convenience function to handle setting all the properties etc */
 PHP_PANGO_API zval* php_pango_make_layoutline_zval(PangoLayoutLine *line, zval *layout TSRMLS_DC)
 {
 	zval *return_value, *length, *is_paragraph_start, *resolved_dir;
@@ -65,7 +67,7 @@ PHP_PANGO_API zval* php_pango_make_layoutline_zval(PangoLayoutLine *line, zval *
 
 	return return_value;
 }
-
+/* }}} */
 
 /* {{{ proto array pango_layout_line_get_extents(PangoLayoutLine line)
 	   proto array PangoLayoutLine::getExtents()
@@ -171,6 +173,7 @@ PHP_FUNCTION(pango_cairo_show_layout_line)
 
 	pango_cairo_show_layout_line(cairocontext_object->context, layoutline_object->line);
 }
+/* }}} */
 
 /* {{{ Object creation/destruction functions */
 static void pango_layoutline_object_destroy(void *object TSRMLS_DC)
@@ -242,7 +245,6 @@ const zend_function_entry pango_layoutline_methods[] = {
 };
 /* }}} */
 
-
 /* {{{ PHP_MINIT_FUNCTION */
 PHP_MINIT_FUNCTION(pango_line)
 {
@@ -265,3 +267,4 @@ PHP_MINIT_FUNCTION(pango_line)
  * vim600: noet sw=4 ts=4 fdm=marker
  * vim<600: noet sw=4 ts=4
  */
+
