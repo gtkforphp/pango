@@ -95,6 +95,10 @@ PHP_FUNCTION(pango_layout_line_get_extents)
 	add_assoc_long(array, "y", ink.y);
 	add_assoc_long(array, "width", ink.width);
 	add_assoc_long(array, "height", ink.height);
+    add_assoc_long(array, "ascent", PANGO_ASCENT(ink));
+    add_assoc_long(array, "descent", PANGO_DESCENT(ink));
+    add_assoc_long(array, "lbearing", PANGO_LBEARING(ink));
+    add_assoc_long(array, "rbearing", PANGO_RBEARING(ink));
 	add_assoc_zval(return_value, "ink", array);
 	ALLOC_INIT_ZVAL(array);
 	array_init(array);
@@ -102,6 +106,10 @@ PHP_FUNCTION(pango_layout_line_get_extents)
 	add_assoc_long(array, "y", logical.y);
 	add_assoc_long(array, "width", logical.width);
 	add_assoc_long(array, "height", logical.height);
+    add_assoc_long(array, "ascent", PANGO_ASCENT(logical));
+    add_assoc_long(array, "descent", PANGO_DESCENT(logical));
+    add_assoc_long(array, "lbearing", PANGO_LBEARING(logical));
+    add_assoc_long(array, "rbearing", PANGO_RBEARING(logical));
 	add_assoc_zval(return_value, "logical", array);
 }
 /* }}} */
@@ -132,6 +140,10 @@ PHP_FUNCTION(pango_layout_line_get_pixel_extents)
 	add_assoc_long(array, "y", ink.y);
 	add_assoc_long(array, "width", ink.width);
 	add_assoc_long(array, "height", ink.height);
+    add_assoc_long(array, "ascent", PANGO_ASCENT(ink));
+    add_assoc_long(array, "descent", PANGO_DESCENT(ink));
+    add_assoc_long(array, "lbearing", PANGO_LBEARING(ink));
+    add_assoc_long(array, "rbearing", PANGO_RBEARING(ink));
 	add_assoc_zval(return_value, "ink", array);
 	ALLOC_INIT_ZVAL(array);
 	array_init(array);
@@ -139,6 +151,10 @@ PHP_FUNCTION(pango_layout_line_get_pixel_extents)
 	add_assoc_long(array, "y", logical.y);
 	add_assoc_long(array, "width", logical.width);
 	add_assoc_long(array, "height", logical.height);
+    add_assoc_long(array, "ascent", PANGO_ASCENT(logical));
+    add_assoc_long(array, "descent", PANGO_DESCENT(logical));
+    add_assoc_long(array, "lbearing", PANGO_LBEARING(logical));
+    add_assoc_long(array, "rbearing", PANGO_RBEARING(logical));
 	add_assoc_zval(return_value, "logical", array);
 }
 /* }}} */
