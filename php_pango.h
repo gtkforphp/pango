@@ -118,6 +118,8 @@ PHP_FUNCTION(pango_layout_get_pixel_extents);
 PHP_FUNCTION(pango_layout_set_width);
 PHP_FUNCTION(pango_layout_set_height);
 PHP_FUNCTION(pango_layout_set_font_description);
+PHP_FUNCTION(pango_layout_get_alignment);
+PHP_FUNCTION(pango_layout_set_alignment);
 PHP_FUNCTION(pango_layout_get_justify);
 PHP_FUNCTION(pango_layout_set_justify);
 PHP_FUNCTION(pango_layout_get_wrap);
@@ -142,6 +144,8 @@ PHP_FUNCTION(pango_cairo_show_layout_line);
 
 /* PangoFontDescription functions */
 PHP_FUNCTION(pango_font_description_new);
+PHP_FUNCTION(pango_font_description_get_variant);
+PHP_FUNCTION(pango_font_description_set_variant);
 
 /* 
   	Declare any global variables you may need between the BEGIN

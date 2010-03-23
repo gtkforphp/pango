@@ -81,6 +81,8 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_set_width, NULL)
 	PHP_FE(pango_layout_set_height, NULL)
 	PHP_FE(pango_layout_set_font_description, NULL)
+	PHP_FE(pango_layout_set_alignment, NULL)
+	PHP_FE(pango_layout_get_alignment, NULL)
 	PHP_FE(pango_layout_set_justify, NULL)
 	PHP_FE(pango_layout_get_justify, NULL)
 	PHP_FE(pango_layout_set_wrap, NULL)
@@ -102,6 +104,11 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_line_get_extents, NULL)
 	PHP_FE(pango_layout_line_get_pixel_extents, NULL)
 	PHP_FE(pango_cairo_show_layout_line, NULL)
+
+	/* PangoFontDescription functions */
+	PHP_FE(pango_font_description_new, NULL)
+	PHP_FE(pango_font_description_get_variant, NULL)
+	PHP_FE(pango_font_description_set_variant, NULL)
 
 /*	PHP_FE(pango_font_description_new, NULL) */
 	{NULL, NULL, NULL}	
