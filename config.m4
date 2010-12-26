@@ -2,8 +2,8 @@ dnl
 dnl $ Id: pango 1.0.1$
 dnl
 
-PHP_ARG_WITH(pango, for Cairo graphics library support,
-[  --with-pango            Enable Cairo support], yes)
+PHP_ARG_WITH(pango, for Pango text layout library support,
+[  --with-pango            Enable Pango support], yes)
 
 if test "$PHP_PANGO" != "no"; then
   export OLD_CPPFLAGS="$CPPFLAGS"
