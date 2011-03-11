@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://pear.php.net/dtd/package-2.0" xmlns:tasks="http://pear.php.net/dtd/tasks-1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" packagerversion="1.4.7" version="2.0" xsi:schemaLocation="http://pear.php.net/dtd/tasks-1.0 http://pear.php.net/dtd/tasks-1.0.xsd http://pear.php.net/dtd/package-2.0 http://pear.php.net/dtd/package-2.0.xsd">
+    <name>Pango</name>
+    <channel>pecl.mgdm.net</channel>
+    <summary>Pango extension</summary>
+    <description>Pango is a library for laying out and rendering of text, with an emphasis on internationalization.</description>
+    <lead>
+     <name>Michael Maclean</name>
+     <user>mgdm</user>
+     <email>mgdm@php.net</email>
+     <active>yes</active>
+    </lead>
+
+    <date>2011-03-11</date>
+    <version><release>0.1.0</release><api>0.1.0</api></version>
+    <stability><release>alpha</release><api>alpha</api></stability>
+    <license uri="http://www.php.net/license">PHP License</license>
+    <notes>
+     * Initial release
+    </notes>
+
+    <contents>
+       <dir name="/">
+            <file role="doc" name="README"/>
+            <file role="doc" name="CREDITS"/>
+
+            <file role="src" name="php_pango.h"/>
+
+            <file role="src" name="pango.c"/>
+            <file role="src" name="pango_context.c"/>
+            <file role="src" name="pango_error.c"/>
+            <file role="src" name="pango_font.c"/>
+            <file role="src" name="pango_layout.c"/>
+            <file role="src" name="pango_line.c"/>
+
+            <file role="src" name="config.m4"/>
+            <file role="src" name="config.w32"/>
+        </dir>
+    </contents>
+
+    <dependencies>
+      <required>
+        <php>
+          <min>5.2.0</min>
+        </php>
+        <pearinstaller>
+          <min>1.4.0</min>
+        </pearinstaller>
+      </required>
+   
+    </dependencies>
+   
+    <providesextension>pango</providesextension>
+
+    <extsrcrelease>
+     <configureoption default="autodetect" name="with-pango" prompt="Please provide the prefix of the Pango installation" />
+    </extsrcrelease>
+   
+    <changelog>
+    </changelog>
+</package>
+<!--
+vim:et:ts=1:sw=1
+-->
