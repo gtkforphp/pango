@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2008 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,8 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:                                                              |
+  | Authors:  Michael Maclean <mgdm@php.net>                             |
+  |           David Marín <davefx@gmail.com>                             |
   +----------------------------------------------------------------------+
 */
 
@@ -128,6 +129,7 @@ PHP_FUNCTION(pango_layout_get_pixel_extents);
 PHP_FUNCTION(pango_layout_set_width);
 PHP_FUNCTION(pango_layout_set_height);
 PHP_FUNCTION(pango_layout_set_font_description);
+PHP_FUNCTION(pango_layout_get_font_description);
 PHP_FUNCTION(pango_layout_get_alignment);
 PHP_FUNCTION(pango_layout_set_alignment);
 PHP_FUNCTION(pango_layout_get_justify);
@@ -156,6 +158,18 @@ PHP_FUNCTION(pango_cairo_show_layout_line);
 PHP_FUNCTION(pango_font_description_new);
 PHP_FUNCTION(pango_font_description_get_variant);
 PHP_FUNCTION(pango_font_description_set_variant);
+PHP_FUNCTION(pango_font_description_equal);
+PHP_FUNCTION(pango_font_description_set_family);
+PHP_FUNCTION(pango_font_description_get_family);
+PHP_FUNCTION(pango_font_description_set_size);
+PHP_FUNCTION(pango_font_description_get_size);
+PHP_FUNCTION(pango_font_description_get_style);
+PHP_FUNCTION(pango_font_description_set_style);
+PHP_FUNCTION(pango_font_description_get_weight);
+PHP_FUNCTION(pango_font_description_set_weight);
+PHP_FUNCTION(pango_font_description_get_stretch);
+PHP_FUNCTION(pango_font_description_set_stretch);
+PHP_FUNCTION(pango_font_description_to_string);
 
 /* 
   	Declare any global variables you may need between the BEGIN

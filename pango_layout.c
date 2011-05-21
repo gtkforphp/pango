@@ -2,7 +2,7 @@
   +----------------------------------------------------------------------+
   | PHP Version 5                                                        |
   +----------------------------------------------------------------------+
-  | Copyright (c) 1997-2008 The PHP Group                                |
+  | Copyright (c) 1997-2011 The PHP Group                                |
   +----------------------------------------------------------------------+
   | This source file is subject to version 3.01 of the PHP license,      |
   | that is bundled with this package in the file LICENSE, and is        |
@@ -12,7 +12,8 @@
   | obtain it through the world-wide-web, please send a note to          |
   | license@php.net so we can mail you a copy immediately.               |
   +----------------------------------------------------------------------+
-  | Author:  Michael Maclean <mgdm@php.net>                              |
+  | Authors:  Michael Maclean <mgdm@php.net>                             |
+  |           David Marín <davefx@gmail.com>                             |
   +----------------------------------------------------------------------+
 */
 
@@ -29,6 +30,7 @@ zend_class_entry *pango_ce_pangolayout;
 zend_class_entry *pango_ce_pangoalignment;
 zend_class_entry *pango_ce_pangowrapmode;
 zend_class_entry *pango_ce_pangoellipsizemode;
+zend_class_entry *pango_ce_pangofontdescription;
 
 /* {{{ proto PangoLayout::__construct(CairoContext cr)
    Creates a PangoLayout based on the CairoContext object */
@@ -103,7 +105,7 @@ PHP_FUNCTION(pango_layout_new)
 /* }}} */
 
 /* {{{ proto PangoContext PangoLayout::getContext()
-   proto PangoContext pango_layout_get_context()
+   proto PangoContext pango_layout_get_context(PangoLayout layout)
    Return the PangoContext for the current layout */
 PHP_FUNCTION(pango_layout_get_context)
 {
@@ -135,13 +137,13 @@ PHP_FUNCTION(pango_layout_get_context)
 		object_init_ex(return_value, ce);
 	}
 
-	    /* Get the context_object and replace the internal context pointer 
+	    /* Get the context_object and replace the internal context pointer
 		 * with what we fetched (should be the same) */
     context_object = (pango_context_object *)zend_object_store_get_object(return_value TSRMLS_CC);
     /* if there IS a value in context, destroy it cause we're getting a new one */
     if (context_object->context != NULL) {
 		g_object_unref(context_object->context);
-    }    
+    }
     /* Grab the context properly */
     context_object->context = context;
     g_object_ref(context_object->context);
@@ -149,7 +151,7 @@ PHP_FUNCTION(pango_layout_get_context)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_text(PangoLayout layout, string text)
- 	   proto void PangoLayout::setText(string text)
+	   proto void PangoLayout::setText(string text)
 	   Sets the text of the layout. */
 PHP_FUNCTION(pango_layout_set_text)
 {
@@ -172,7 +174,7 @@ PHP_FUNCTION(pango_layout_set_text)
 /* }}} */
 
 /* {{{ proto string pango_layout_get_text(PangoLayout layout)
- 	   proto string PangoLayout::getText(string text)
+	   proto string PangoLayout::getText()
 	   Gets the text currently in the layout */
 PHP_FUNCTION(pango_layout_get_text)
 {
@@ -196,7 +198,7 @@ PHP_FUNCTION(pango_layout_get_text)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_markup(PangoLayout layout, string markup)
- 	   proto void PangoLayout::setMarkup(string markup)
+	   proto void PangoLayout::setMarkup(string markup)
 	   Sets the markup of the layout. */
 PHP_FUNCTION(pango_layout_set_markup)
 {
@@ -217,9 +219,9 @@ PHP_FUNCTION(pango_layout_set_markup)
 }
 
 /* {{{ proto void pango_layout_context_changed(PangoLayout layout)
- 	   proto void PangoLayout::contextChanged() 
-	   Updates the private PangoContext of a PangoLayout to match the current transformation 
-	   and target surface of a Cairo context. 
+	   proto void PangoLayout::contextChanged()
+	   Updates the private PangoContext of a PangoLayout to match the current transformation
+	   and target surface of a Cairo context.
 	   NB: PARAMS ARE REVERSED FROM NATIVE PANGO
 	   */
 
@@ -247,7 +249,7 @@ PHP_FUNCTION(pango_layout_context_changed)
 #if 0
 /* Need to work out how to handle multibyte characters here */
 /* {{{ proto void pango_layout_set_markup(PangoLayout layout, string markup)
- 	   proto void PangoLayout::setText(string markup)
+	   proto void PangoLayout::setText(string markup)
 	   Sets the markup of the layout with accelerator markers. */
 PHP_FUNCTION(pango_layout_set_markup_with_accel)
 {
@@ -278,9 +280,9 @@ PHP_FUNCTION(pango_layout_set_markup_with_accel)
 /* }}} */
 
 /* {{{ proto void pango_cairo_update_layout(CairoContext cr, PangoLayout layout)
- 	   proto void PangoLayout::updateLayout(CairoContext cr) 
-	   Updates the private PangoContext of a PangoLayout to match the current transformation 
-	   and target surface of a Cairo context. 
+	   proto void PangoLayout::updateLayout(CairoContext cr)
+	   Updates the private PangoContext of a PangoLayout to match the current transformation
+	   and target surface of a Cairo context.
 	   NB: PARAMS ARE REVERSED FROM NATIVE PANGO
 	   */
 
@@ -312,7 +314,7 @@ PHP_FUNCTION(pango_cairo_update_layout)
 /* }}} */
 
 /* {{{ proto void pango_cairo_show_layout(CairoContext cr, PangoLayout layout)
- 	   proto void PangoLayout::showLayout(CairoContext cr) 
+	   proto void PangoLayout::showLayout(CairoContext cr)
 	   Draws a PangoLayoutLine in the specified cairo context.
 	   NB: PARAMS ARE REVERSED FROM NATIVE PANGO
 	   */
@@ -345,7 +347,7 @@ PHP_FUNCTION(pango_cairo_show_layout)
 /* }}} */
 
 /* {{{ proto void pango_cairo_layout_path(CairoContext cr, PangoLayout layout)
- 	   proto void PangoLayout::layoutPath(CairoContext cr) 
+	   proto void PangoLayout::layoutPath(CairoContext cr)
 	   Adds the specified text to the current path in the specified cairo context.
 	   NB: PARAMS ARE REVERSED FROM NATIVE PANGO
 	   */
@@ -377,9 +379,9 @@ PHP_FUNCTION(pango_cairo_layout_path)
 }
 /* }}} */
 
-/* {{{ proto void pango_layout_get_width(PangoLayout layout, long width)
- 	   proto void PangoLayout::getWidth(long width)
-	   Sets the width of the layout. */
+/* {{{ proto long pango_layout_get_width(PangoLayout layout)
+	   proto long PangoLayout::getWidth()
+	   Gets the width of the layout. */
 PHP_FUNCTION(pango_layout_get_width)
 {
 	zval *layout_zval = NULL;
@@ -405,9 +407,9 @@ PHP_FUNCTION(pango_layout_get_width)
 
 #ifdef PANGO_VERSION
 #if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
-/* {{{ proto void pango_layout_get_height(PangoLayout layout, long height)
- 	   proto void PangoLayout::getHeight(long height)
-	   Sets the height of the layout. */
+/* {{{ proto long pango_layout_get_height(PangoLayout layout)
+	   proto long PangoLayout::getHeight()
+	   Gets the height of the layout. */
 PHP_FUNCTION(pango_layout_get_height)
 {
 	zval *layout_zval = NULL;
@@ -433,9 +435,9 @@ PHP_FUNCTION(pango_layout_get_height)
 #endif
 
 
-/* {{{ proto void pango_layout_get_size(PangoLayout layout)
- 	   proto void PangoLayout::getHeight()
-	   Sets the size of the layout. */
+/* {{{ proto array pango_layout_get_size(PangoLayout layout)
+	   proto array PangoLayout::getSize()
+	   Gets the size of the layout. */
 PHP_FUNCTION(pango_layout_get_size)
 {
 	zval *layout_zval = NULL;
@@ -460,8 +462,8 @@ PHP_FUNCTION(pango_layout_get_size)
 
 /* }}} */
 
-/* {{{ proto void pango_layout_get_pixel_size(PangoLayout layout)
- 	   proto void PangoLayout::getPixelSize()
+/* {{{ proto array pango_layout_get_pixel_size(PangoLayout layout)
+	   proto array PangoLayout::getPixelSize()
 	   Gets the size of layout in pixels */
 PHP_FUNCTION(pango_layout_get_pixel_size)
 {
@@ -487,8 +489,8 @@ PHP_FUNCTION(pango_layout_get_pixel_size)
 
 /* }}} */
 
-/* {{{ proto void pango_layout_get_extents(PangoLayout layout)
- 	   proto void PangoLayout::getExtents()
+/* {{{ proto array pango_layout_get_extents(PangoLayout layout)
+	   proto array PangoLayout::getExtents()
 	   Gets the extents of layout in */
 PHP_FUNCTION(pango_layout_get_extents)
 {
@@ -528,8 +530,8 @@ PHP_FUNCTION(pango_layout_get_extents)
 
 /* }}} */
 
-/* {{{ proto void pango_layout_get_pixel_extents(PangoLayout layout)
- 	   proto void PangoLayout::getPixelExtents()
+/* {{{ proto array pango_layout_get_pixel_extents(PangoLayout layout)
+	   proto array PangoLayout::getPixelExtents()
 	   Gets the extents of layout in pixels */
 PHP_FUNCTION(pango_layout_get_pixel_extents)
 {
@@ -570,7 +572,7 @@ PHP_FUNCTION(pango_layout_get_pixel_extents)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_width(PangoLayout layout, long width)
- 	   proto void PangoLayout::setWidth(long width)
+	   proto void PangoLayout::setWidth(long width)
 	   Sets the width of the layout. */
 PHP_FUNCTION(pango_layout_set_width)
 {
@@ -594,7 +596,7 @@ PHP_FUNCTION(pango_layout_set_width)
 #ifdef PANGO_VERSION
 #if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto void pango_layout_set_height(PangoLayout layout, long height)
- 	   proto void PangoLayout::setHeight(long height)
+	   proto void PangoLayout::setHeight(long height)
 	   Sets the height of the layout. */
 PHP_FUNCTION(pango_layout_set_height)
 {
@@ -616,8 +618,8 @@ PHP_FUNCTION(pango_layout_set_height)
 #endif
 #endif
 
-/* {{{ proto void pango_layout_set_font_description(PangoLayout layout, long font_description)
- 	   proto void PangoLayout::setHeight(long font_description)
+/* {{{ proto void pango_layout_set_font_description(PangoLayout layout, PangoFontDescription font_description)
+	   proto void PangoLayout::setFontDescription(PangoFontDescription font_description)
 	   Sets the font_description of the layout. */
 PHP_FUNCTION(pango_layout_set_font_description)
 {
@@ -639,8 +641,37 @@ PHP_FUNCTION(pango_layout_set_font_description)
 
 /* }}} */
 
+
+/* {{{ proto PangoFontDescription object pango_layout_get_font_description(PangoLayout layout)
+	   proto PangoFontDescription object PangoLayout::getFontDescription()
+	   Gets the font_description of the layout. */
+PHP_FUNCTION(pango_layout_get_font_description)
+{
+	zval *layout_zval = NULL;
+	pango_layout_object *layout_object;
+	pango_fontdesc_object *fontdesc_object = NULL;
+	const PangoFontDescription *aux = NULL;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	object_init_ex(return_value, pango_ce_pangofontdescription);
+	fontdesc_object = (pango_fontdesc_object *) zend_object_store_get_object(return_value TSRMLS_CC);
+
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	aux = pango_layout_get_font_description(layout_object->layout);
+	fontdesc_object->fontdesc = pango_font_description_copy (aux);
+
+}
+
+/* }}} */
+
 /* {{{ proto void pango_layout_set_justify(PangoLayout layout, bool justify)
- 	   proto void PangoLayout::setJustify(bool justify)
+	   proto void PangoLayout::setJustify(bool justify)
 	   Sets whether each line should be justified. */
 PHP_FUNCTION(pango_layout_set_justify)
 {
@@ -662,7 +693,7 @@ PHP_FUNCTION(pango_layout_set_justify)
 /* }}} */
 
 /* {{{ proto bool pango_layout_get_justify(PangoLayout layout)
- 	   proto bool PangoLayout::getJustify(void)
+	   proto bool PangoLayout::getJustify()
 	   Returns whether text will be justified or not in the current layout */
 PHP_FUNCTION(pango_layout_get_justify)
 {
@@ -681,8 +712,8 @@ PHP_FUNCTION(pango_layout_get_justify)
 }
 /* }}} */
 
-/* {{{ proto void pango_layout_set_alignment(PangoLayout layout, bool alignment)
- 	   proto void PangoLayout::setAlignment(bool alignment)
+/* {{{ proto void pango_layout_set_alignment(PangoLayout layout, long alignment)
+	   proto void PangoLayout::setAlignment(long alignment)
 	   Sets whether each line should be justified. */
 PHP_FUNCTION(pango_layout_set_alignment)
 {
@@ -703,8 +734,8 @@ PHP_FUNCTION(pango_layout_set_alignment)
 
 /* }}} */
 
-/* {{{ proto bool pango_layout_get_alignment(PangoLayout layout)
- 	   proto bool PangoLayout::getAlignment(void)
+/* {{{ proto long pango_layout_get_alignment(PangoLayout layout)
+	   proto long PangoLayout::getAlignment()
 	   Returns whether text will be justified or not in the current layout */
 PHP_FUNCTION(pango_layout_get_alignment)
 {
@@ -724,7 +755,7 @@ PHP_FUNCTION(pango_layout_get_alignment)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_wrap(PangoLayout layout, long wrap)
- 	   proto void PangoLayout::setWrap(bool wrap)
+	   proto void PangoLayout::setWrap(long wrap)
 	   Sets how each line should be wrapped. */
 PHP_FUNCTION(pango_layout_set_wrap)
 {
@@ -745,8 +776,8 @@ PHP_FUNCTION(pango_layout_set_wrap)
 
 /* }}} */
 
-/* {{{ proto bool pango_layout_get_wrap(PangoLayout layout)
- 	   proto bool PangoLayout::getWrap(void)
+/* {{{ proto long pango_layout_get_wrap(PangoLayout layout)
+	   proto long PangoLayout::getWrap()
 	   Returns how text will be wrapped or not in the current layout */
 PHP_FUNCTION(pango_layout_get_wrap)
 {
@@ -768,7 +799,7 @@ PHP_FUNCTION(pango_layout_get_wrap)
 #ifdef PANGO_VERSION
 #if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto bool pango_layout_is_wrapped(PangoLayout layout)
- 	   proto bool PangoLayout::isWrapped(void)
+	   proto bool PangoLayout::isWrapped()
 	   Returns how text will be wrapped or not in the current layout */
 PHP_FUNCTION(pango_layout_is_wrapped)
 {
@@ -789,8 +820,8 @@ PHP_FUNCTION(pango_layout_is_wrapped)
 #endif
 #endif
 
-/* {{{ proto void pango_layout_set_indent(PangoLayout layout, int indent)
- 	   proto void PangoLayout::setWrap(bool indent)
+/* {{{ proto void pango_layout_set_indent(PangoLayout layout, long indent)
+	   proto void PangoLayout::setWrap(long indent)
 	   Sets how far each paragraph should be indented. */
 PHP_FUNCTION(pango_layout_set_indent)
 {
@@ -811,8 +842,8 @@ PHP_FUNCTION(pango_layout_set_indent)
 
 /* }}} */
 
-/* {{{ proto bool pango_layout_get_indent(PangoLayout layout)
- 	   proto bool PangoLayout::getIndent(void)
+/* {{{ proto long pango_layout_get_indent(PangoLayout layout)
+	   proto long PangoLayout::getIndent()
 	   Returns how text will be indentped or not in the current layout */
 PHP_FUNCTION(pango_layout_get_indent)
 {
@@ -831,8 +862,8 @@ PHP_FUNCTION(pango_layout_get_indent)
 }
 /* }}} */
 
-/* {{{ proto void pango_layout_set_spacing(PangoLayout layout, int spacing)
- 	   proto void PangoLayout::setWrap(bool spacing)
+/* {{{ proto void pango_layout_set_spacing(PangoLayout layout, long spacing)
+	   proto void PangoLayout::setWrap(long spacing)
 	   Sets the line spacing for the paragraph */
 PHP_FUNCTION(pango_layout_set_spacing)
 {
@@ -853,8 +884,8 @@ PHP_FUNCTION(pango_layout_set_spacing)
 
 /* }}} */
 
-/* {{{ proto bool pango_layout_get_spacing(PangoLayout layout)
- 	   proto bool PangoLayout::getWrap(void)
+/* {{{ proto long pango_layout_get_spacing(PangoLayout layout)
+	   proto long PangoLayout::getWrap()
 	   Returns the spacing for the current layout */
 PHP_FUNCTION(pango_layout_get_spacing)
 {
@@ -874,7 +905,7 @@ PHP_FUNCTION(pango_layout_get_spacing)
 /* }}} */
 
 /* {{{ proto void pango_layout_set_ellipsize(PangoLayout layout, long ellipsize)
- 	   proto void PangoLayout::setEllipsize(long ellipsize)
+	   proto void PangoLayout::setEllipsize(long ellipsize)
 	   Sets the ellipsize mode for the layout */
 PHP_FUNCTION(pango_layout_set_ellipsize)
 {
@@ -896,7 +927,7 @@ PHP_FUNCTION(pango_layout_set_ellipsize)
 /* }}} */
 
 /* {{{ proto long pango_layout_get_ellipsize(PangoLayout layout)
- 	   proto long PangoLayout::getEllipsize(void)
+	   proto long PangoLayout::getEllipsize()
 	   Returns the ellipsize for the current layout */
 PHP_FUNCTION(pango_layout_get_ellipsize)
 {
@@ -918,7 +949,7 @@ PHP_FUNCTION(pango_layout_get_ellipsize)
 #ifdef PANGO_VERSION
 #if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto bool pango_layout_is_ellipsized(PangoLayout layout)
- 	   proto bool PangoLayout::isEllipsized(void)
+	   proto bool PangoLayout::isEllipsized()
 	   Returns the ellipsize for the current layout */
 PHP_FUNCTION(pango_layout_is_ellipsized)
 {
@@ -940,7 +971,7 @@ PHP_FUNCTION(pango_layout_is_ellipsized)
 #endif
 
 /* {{{ proto array pango_layout_get_lines(PangoLayout layout)
-	   proto array PangoLayout::getLines(void)
+	   proto array PangoLayout::getLines()
 	   Returns an array of PangoLayoutLines representing each line of the layout */
 PHP_FUNCTION(pango_layout_get_lines)
 {
@@ -998,8 +1029,8 @@ PHP_FUNCTION(pango_layout_get_line)
 	*return_value = *php_pango_make_layoutline_zval(layoutline, layout_zval TSRMLS_CC);
 }
 
-/* {{{ proto array pango_layout_get_line_count(PangoLayout layout, long line)
-	   proto array PangoLayout::getLineCount(long line)
+/* {{{ proto long pango_layout_get_line_count(PangoLayout layout)
+	   proto long PangoLayout::getLineCount()
 	   Returns the number of PangoLayoutLines in the layout */
 PHP_FUNCTION(pango_layout_get_line_count)
 {
@@ -1029,11 +1060,11 @@ static void pango_layout_object_destroy(void *object TSRMLS_DC)
     if(layout->cairo_context) {
         Z_DELREF_P(layout->cairo_context);
         layout->cairo_context = NULL;
-    }    
+    }
 
     if(layout->layout){
 		g_object_unref(layout->layout);
-    }    
+    }
     efree(object);
 }
 
@@ -1051,7 +1082,7 @@ static zend_object_value pango_layout_object_new(zend_class_entry *ce TSRMLS_DC)
 
     ALLOC_HASHTABLE(layout->std.properties);
     zend_hash_init(layout->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
-    zend_hash_copy(layout->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *)); 
+    zend_hash_copy(layout->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *));
     retval.handle = zend_objects_store_put(layout, NULL, (zend_objects_free_object_storage_t)pango_layout_object_destroy, NULL TSRMLS_CC);
     retval.handlers = &pango_std_object_handlers;
     return retval;
@@ -1061,7 +1092,7 @@ static zend_object_value pango_layout_object_new(zend_class_entry *ce TSRMLS_DC)
 /* {{{ pango_layout_class_functions */
 const zend_function_entry pango_layout_methods[] = {
 	PHP_ME(PangoLayout, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
-	PHP_ME_MAPPING(getContext, pango_layout_get_context, NULL, ZEND_ACC_PUBLIC) 
+	PHP_ME_MAPPING(getContext, pango_layout_get_context, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
@@ -1081,6 +1112,7 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(layoutPath, pango_cairo_layout_path, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setFontDescription, pango_layout_set_font_description, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getFontDescription, pango_layout_get_font_description, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setAlignment, pango_layout_set_alignment, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getAlignment, pango_layout_get_alignment, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setJustify, pango_layout_set_justify, NULL, ZEND_ACC_PUBLIC)
@@ -1094,13 +1126,13 @@ const zend_function_entry pango_layout_methods[] = {
 #endif
 	PHP_ME_MAPPING(setIndent, pango_layout_set_indent, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getIndent, pango_layout_get_indent, NULL, ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(setSpacing, pango_layout_set_spacing, NULL, ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(getSpacing, pango_layout_get_spacing, NULL, ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(setEllipsize, pango_layout_set_ellipsize, NULL, ZEND_ACC_PUBLIC)
- 	PHP_ME_MAPPING(getEllipsize, pango_layout_get_ellipsize, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setSpacing, pango_layout_set_spacing, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getSpacing, pango_layout_get_spacing, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setEllipsize, pango_layout_set_ellipsize, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getEllipsize, pango_layout_get_ellipsize, NULL, ZEND_ACC_PUBLIC)
 #ifdef PANGO_VERSION
 #if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
- 	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
 #endif
 #endif
 	PHP_ME_MAPPING(contextChanged, pango_layout_context_changed, NULL, ZEND_ACC_PUBLIC)
@@ -1118,6 +1150,7 @@ PHP_MINIT_FUNCTION(pango_layout)
 	zend_class_entry alignment_ce;
 	zend_class_entry wrapmode_ce;
 	zend_class_entry ellipsizemode_ce;
+	zend_class_entry fontdescription_ce;
 
 	INIT_CLASS_ENTRY(layout_ce, "PangoLayout", pango_layout_methods);
 	pango_ce_pangolayout = zend_register_internal_class(&layout_ce TSRMLS_CC);
@@ -1159,6 +1192,10 @@ PHP_MINIT_FUNCTION(pango_layout)
 	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("START", PANGO_ELLIPSIZE_START);
 	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("MIDDLE", PANGO_ELLIPSIZE_MIDDLE);
 	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("END", PANGO_ELLIPSIZE_END);
+
+	INIT_CLASS_ENTRY(fontdescription_ce, "PangoFontDescription", NULL);
+	pango_ce_pangofontdescription = zend_register_internal_class(&fontdescription_ce TSRMLS_CC);
+	pango_ce_pangofontdescription->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
 
 	return SUCCESS;
 }
