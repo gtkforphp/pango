@@ -62,7 +62,7 @@ PHP_METHOD(PangoFontDescription, __construct)
 }
 /* }}} */
 
-/* {{{ proto pango_font_description_new(string description)
+/* {{{ proto PangoFontDescription pango_font_description_new(string description)
  	   Creates a new font description object. This merges pango_font_description_new 
 	   and pango_font_description_from_string. */
 PHP_FUNCTION(pango_font_description_new)
@@ -87,14 +87,12 @@ PHP_FUNCTION(pango_font_description_new)
 	}
 
 	if(fontdesc_object->fontdesc == NULL) {
-		php_error_docref(NULL TSRMLS_CC, E_WARNING, "Could not create the Pango font description");
-		return;
 	}
 }
 /* }}} */
 
-/* {{{ proto void pango_font_description_get_variant(PangoFontDescription fontdesc)
- 	   proto void PangoFontDescription::getVarant()
+/* {{{ proto long pango_font_description_get_variant(PangoFontDescription fontdesc)
+ 	   proto long PangoFontDescription::getVariant()
 	   Sets the variant of the font description. */
 PHP_FUNCTION(pango_font_description_get_variant)
 {
@@ -115,7 +113,7 @@ PHP_FUNCTION(pango_font_description_get_variant)
 
 /* }}} */
 
-/* {{{ proto void pango_font_description_set_variant
+/* {{{ proto void pango_font_description_set_variant (PangoFontDescription fontdesc, long variant)
  	   proto void PangoFontDescription::setVariant(long variant)
 	   Sets the variant of the layout. */
 PHP_FUNCTION(pango_font_description_set_variant)
@@ -136,6 +134,284 @@ PHP_FUNCTION(pango_font_description_set_variant)
 }
 
 /* }}} */
+
+/* {{{ proto boolean pango_font_description_equal(PangoFontDescription fontdesc1, PangoFontDescription fontdesc2)
+ 	   proto boolean PangoFontDescription::equal(PangoFontDescription fontdesc2)
+	   Compares two font description objects for equality. 
+       */
+PHP_FUNCTION(pango_font_description_equal)
+{
+	zval *fontdesc_zval = NULL, *fontdesc2_zval = NULL;
+	pango_fontdesc_object *fontdesc_object, *fontdesc2_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "OO", 
+			   &fontdesc_zval, pango_ce_pangofontdescription, &fontdesc2_zval, pango_ce_pangofontdescription) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	fontdesc2_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc2_zval TSRMLS_CC);
+	RETURN_BOOL(pango_font_description_equal(fontdesc_object->fontdesc, fontdesc2_object->fontdesc));
+}
+
+/* }}} */
+
+/* {{{ proto void pango_font_description_set_family (PangoFontDescription fontdesc, string family)
+ 	   proto void PangoFontDescription::setFamily(string family)
+	   Sets the family name field of a font description. */
+PHP_FUNCTION(pango_font_description_set_family)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	const char *family;
+	long family_len;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+		if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Os", &fontdesc_zval, pango_ce_pangofontdescription, &family, &family_len) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_font_description_set_family(fontdesc_object->fontdesc, family);
+}
+
+/* }}} */
+
+/* {{{ proto string pango_font_description_get_family (PangoFontDescription fontdesc)
+ 	   proto string PangoFontDescription::getFamily()
+	   Sets the family name field of a font description. */
+PHP_FUNCTION(pango_font_description_get_family)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	const char *family;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+		if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	if ((family = pango_font_description_get_family(fontdesc_object->fontdesc))) {
+		RETURN_STRING((char *)family, 1);
+	}
+	RETURN_FALSE;
+}
+
+/* }}} */
+
+/* {{{ proto void pango_font_description_set_size (PangoFontDescription fontdesc, long size)
+ 	   proto void PangoFontDescription::setSize(long size)
+	   Sets the size field of a font description. */
+PHP_FUNCTION(pango_font_description_set_size)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	long size;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+		if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &fontdesc_zval, pango_ce_pangofontdescription, &size) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_font_description_set_size(fontdesc_object->fontdesc, size);
+}
+
+/* }}} */
+
+/* {{{ proto long pango_font_description_get_size (PangoFontDescription fontdesc)
+ 	   proto long PangoFontDescription::getSize()
+	   Gets the size field of a font description. */
+PHP_FUNCTION(pango_font_description_get_size)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	long size;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+		if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	RETURN_LONG (pango_font_description_get_size(fontdesc_object->fontdesc));
+}
+
+/* }}} */
+
+/* {{{ proto long pango_font_description_get_style(PangoFontDescription fontdesc)
+ 	   proto long PangoFontDescription::getStyle()
+	   Gets the style of the font description. */
+PHP_FUNCTION(pango_font_description_get_style)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	RETURN_LONG(pango_font_description_get_style(fontdesc_object->fontdesc));
+}
+
+/* }}} */
+
+/* {{{ proto void pango_font_description_set_style (PangoFontDescription fontdesc, long style)
+ 	   proto void PangoFontDescription::setVariant(long style)
+	   Sets the style of the layout. */
+PHP_FUNCTION(pango_font_description_set_style)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	long style;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &fontdesc_zval, pango_ce_pangofontdescription, &style) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_font_description_set_style(fontdesc_object->fontdesc, style);
+}
+
+/* }}} */
+
+
+/* {{{ proto long pango_font_description_get_weight(PangoFontDescription fontdesc)
+ 	   proto long PangoFontDescription::getWeight()
+	   Sets the weight of the font description. */
+PHP_FUNCTION(pango_font_description_get_weight)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	RETURN_LONG(pango_font_description_get_weight(fontdesc_object->fontdesc));
+}
+
+/* }}} */
+
+/* {{{ proto void pango_font_description_set_weight (PangoFontDescription fontdesc, long weight)
+ 	   proto void PangoFontDescription::setWeight(long weight)
+	   Sets the weight of the layout. */
+PHP_FUNCTION(pango_font_description_set_weight)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	long weight;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &fontdesc_zval, pango_ce_pangofontdescription, &weight) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_font_description_set_weight(fontdesc_object->fontdesc, weight);
+}
+
+/* }}} */
+
+
+/* {{{ proto long pango_font_description_get_stretch(PangoFontDescription fontdesc)
+ 	   proto long PangoFontDescription::getStretch()
+	   Sets the stretch of the font description. */
+PHP_FUNCTION(pango_font_description_get_stretch)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	RETURN_LONG(pango_font_description_get_stretch(fontdesc_object->fontdesc));
+}
+
+/* }}} */
+
+/* {{{ proto void pango_font_description_set_stretch (PangoFontDescription fontdesc, long stretch)
+ 	   proto void PangoFontDescription::setStretch(long stretch)
+	   Sets the stretch of the layout. */
+PHP_FUNCTION(pango_font_description_set_stretch)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	long stretch;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "Ol", &fontdesc_zval, pango_ce_pangofontdescription, &stretch) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	pango_font_description_set_stretch(fontdesc_object->fontdesc, stretch);
+}
+
+/* }}} */
+
+/* {{{ proto string pango_font_description_to_string (PangoFontDescription fontdesc)
+ 	   proto string PangoFontDescription::toString()
+	   Creates a string representation of a font description. */
+PHP_FUNCTION(pango_font_description_to_string)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+	const char *result;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+		if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	if ((result = pango_font_description_to_string(fontdesc_object->fontdesc))) {
+		RETURN_STRING((char *)result, 1);
+	}
+	RETURN_FALSE;
+}
+
+/* }}} */
+
+
+
 
 /* {{{ Object creation/destruction functions */
 static void pango_fontdesc_object_destroy(void *object TSRMLS_DC)
@@ -175,6 +451,18 @@ const zend_function_entry pango_fontdesc_methods[] = {
 	PHP_ME(PangoFontDescription, __construct, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_CTOR)
 	PHP_ME_MAPPING(getVariant, pango_font_description_get_variant, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setVariant, pango_font_description_set_variant, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(equal, pango_font_description_equal, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setFamily, pango_font_description_set_family, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getFamily, pango_font_description_get_family, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setSize, pango_font_description_set_size, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getSize, pango_font_description_get_size, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getStyle, pango_font_description_get_style, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setStyle, pango_font_description_set_style, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getWeight, pango_font_description_get_weight, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setWeight, pango_font_description_set_weight, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getStretch, pango_font_description_get_stretch, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setStretch, pango_font_description_set_stretch, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(toString, pango_font_description_to_string, NULL, ZEND_ACC_PUBLIC)
 	{ NULL, NULL, NULL }
 };
 
