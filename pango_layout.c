@@ -1165,10 +1165,6 @@ PHP_MINIT_FUNCTION(pango_layout)
 	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("MIDDLE", PANGO_ELLIPSIZE_MIDDLE);
 	REGISTER_PANGO_ELLIPSIZEMODE_LONG_CONST("END", PANGO_ELLIPSIZE_END);
 
-	INIT_CLASS_ENTRY(fontdescription_ce, "PangoFontDescription", NULL);
-	pango_ce_pangofontdescription = zend_register_internal_class(&fontdescription_ce TSRMLS_CC);
-	pango_ce_pangofontdescription->ce_flags |= ZEND_ACC_EXPLICIT_ABSTRACT_CLASS | ZEND_ACC_FINAL_CLASS;
-
 	return SUCCESS;
 }
 
