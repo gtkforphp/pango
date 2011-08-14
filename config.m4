@@ -54,7 +54,7 @@ if test "$PHP_PANGO" != "no"; then
         AC_MSG_CHECKING(for pango)
     
         if $PKG_CONFIG --exists pango; then
-            if $PKG_CONFIG --atleast-version=1.20 pango; then
+            if $PKG_CONFIG --atleast-version=1.14 pango; then
                 pango_version_full=`$PKG_CONFIG --modversion pango`
                 AC_MSG_RESULT([found $pango_version_full])
                 PANGO_LIBS="$LDFLAGS `$PKG_CONFIG --libs pango`"

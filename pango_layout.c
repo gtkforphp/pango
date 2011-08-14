@@ -402,6 +402,8 @@ PHP_FUNCTION(pango_layout_get_width)
 
 /* }}} */
 
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto void pango_layout_get_height(PangoLayout layout, long height)
  	   proto void PangoLayout::getHeight(long height)
 	   Sets the height of the layout. */
@@ -425,8 +427,10 @@ PHP_FUNCTION(pango_layout_get_height)
 	}
 	RETURN_FALSE;
 }
-
 /* }}} */
+#endif
+#endif
+
 
 /* {{{ proto void pango_layout_get_size(PangoLayout layout)
  	   proto void PangoLayout::getHeight()
@@ -586,6 +590,8 @@ PHP_FUNCTION(pango_layout_set_width)
 
 /* }}} */
 
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto void pango_layout_set_height(PangoLayout layout, long height)
  	   proto void PangoLayout::setHeight(long height)
 	   Sets the height of the layout. */
@@ -605,8 +611,9 @@ PHP_FUNCTION(pango_layout_set_height)
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	pango_layout_set_height(layout_object->layout, height);
 }
-
 /* }}} */
+#endif
+#endif
 
 /* {{{ proto void pango_layout_set_font_description(PangoLayout layout, long font_description)
  	   proto void PangoLayout::setHeight(long font_description)
@@ -757,6 +764,8 @@ PHP_FUNCTION(pango_layout_get_wrap)
 }
 /* }}} */
 
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto bool pango_layout_is_wrapped(PangoLayout layout)
  	   proto bool PangoLayout::isWrapped(void)
 	   Returns how text will be wrapped or not in the current layout */
@@ -776,6 +785,8 @@ PHP_FUNCTION(pango_layout_is_wrapped)
 	RETURN_BOOL(pango_layout_is_wrapped(layout_object->layout));
 }
 /* }}} */
+#endif
+#endif
 
 /* {{{ proto void pango_layout_set_indent(PangoLayout layout, int indent)
  	   proto void PangoLayout::setWrap(bool indent)
@@ -903,6 +914,8 @@ PHP_FUNCTION(pango_layout_get_ellipsize)
 }
 /* }}} */
 
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 /* {{{ proto bool pango_layout_is_ellipsized(PangoLayout layout)
  	   proto bool PangoLayout::isEllipsized(void)
 	   Returns the ellipsize for the current layout */
@@ -922,6 +935,8 @@ PHP_FUNCTION(pango_layout_is_ellipsized)
 	RETURN_BOOL(pango_layout_is_ellipsized(layout_object->layout));
 }
 /* }}} */
+#endif
+#endif
 
 /* {{{ proto array pango_layout_get_lines(PangoLayout layout)
 	   proto array PangoLayout::getLines(void)
@@ -1049,13 +1064,17 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(setText, pango_layout_set_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getText, pango_layout_get_text, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWidth, pango_layout_get_width, NULL, ZEND_ACC_PUBLIC)
-	PHP_ME_MAPPING(getHeight, pango_layout_get_height, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getSize, pango_layout_get_size, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getPixelSize, pango_layout_get_pixel_size, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getExtents, pango_layout_get_extents, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getPixelExtents, pango_layout_get_pixel_extents, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWidth, pango_layout_set_width, NULL, ZEND_ACC_PUBLIC)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
+	PHP_ME_MAPPING(getHeight, pango_layout_get_height, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setHeight, pango_layout_set_height, NULL, ZEND_ACC_PUBLIC)
+#endif
+#endif
 	PHP_ME_MAPPING(setMarkup, pango_layout_set_markup, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(updateLayout, pango_cairo_update_layout, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(showLayout, pango_cairo_show_layout, NULL, ZEND_ACC_PUBLIC)
@@ -1067,14 +1086,22 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(getJustify, pango_layout_get_justify, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setWrap, pango_layout_set_wrap, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getWrap, pango_layout_get_wrap, NULL, ZEND_ACC_PUBLIC)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 	PHP_ME_MAPPING(isWrapped, pango_layout_is_wrapped, NULL, ZEND_ACC_PUBLIC)
+#endif
+#endif
 	PHP_ME_MAPPING(setIndent, pango_layout_set_indent, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getIndent, pango_layout_get_indent, NULL, ZEND_ACC_PUBLIC)
  	PHP_ME_MAPPING(setSpacing, pango_layout_set_spacing, NULL, ZEND_ACC_PUBLIC)
  	PHP_ME_MAPPING(getSpacing, pango_layout_get_spacing, NULL, ZEND_ACC_PUBLIC)
  	PHP_ME_MAPPING(setEllipsize, pango_layout_set_ellipsize, NULL, ZEND_ACC_PUBLIC)
  	PHP_ME_MAPPING(getEllipsize, pango_layout_get_ellipsize, NULL, ZEND_ACC_PUBLIC)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
  	PHP_ME_MAPPING(isEllipsized, pango_layout_is_ellipsized, NULL, ZEND_ACC_PUBLIC)
+#endif
+#endif
 	PHP_ME_MAPPING(contextChanged, pango_layout_context_changed, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getLines, pango_layout_get_lines, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getLine, pango_layout_get_line, NULL, ZEND_ACC_PUBLIC)

@@ -34,6 +34,8 @@ ZEND_DECLARE_MODULE_GLOBALS(pango)
 zend_class_entry *pango_ce_pango;
 zend_object_handlers pango_std_object_handlers;
 
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 /* proto int pango_version(void) {{{
    returns the Pango version */
 PHP_FUNCTION(pango_version)
@@ -57,14 +59,20 @@ PHP_FUNCTION(pango_version_string)
 	RETURN_STRING((char *)pango_version_string(), 1);
 }
 /* }}} */
+#endif
+#endif
 
 /* {{{ pango_functions[]
  *
  * Every user visible function must have an entry in pango_functions[].
  */
 const zend_function_entry pango_functions[] = {
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 	PHP_FE(pango_version, NULL)
 	PHP_FE(pango_version_string, NULL)
+#endif
+#endif
 	PHP_FE(pango_layout_new, NULL)
 	PHP_FE(pango_cairo_update_layout, NULL)
 	PHP_FE(pango_cairo_show_layout, NULL)
@@ -73,13 +81,17 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_text, NULL)
 	PHP_FE(pango_layout_set_markup, NULL)
 	PHP_FE(pango_layout_get_width, NULL)
-	PHP_FE(pango_layout_get_height, NULL)
 	PHP_FE(pango_layout_get_size, NULL)
 	PHP_FE(pango_layout_get_pixel_size, NULL)
 	PHP_FE(pango_layout_get_extents, NULL)
 	PHP_FE(pango_layout_get_pixel_extents, NULL)
 	PHP_FE(pango_layout_set_width, NULL)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 20, 0)
 	PHP_FE(pango_layout_set_height, NULL)
+	PHP_FE(pango_layout_get_height, NULL)
+#endif
+#endif
 	PHP_FE(pango_layout_set_font_description, NULL)
 	PHP_FE(pango_layout_set_alignment, NULL)
 	PHP_FE(pango_layout_get_alignment, NULL)
@@ -87,14 +99,22 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_justify, NULL)
 	PHP_FE(pango_layout_set_wrap, NULL)
 	PHP_FE(pango_layout_get_wrap, NULL)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 	PHP_FE(pango_layout_is_wrapped, NULL)
+#endif
+#endif
 	PHP_FE(pango_layout_set_indent, NULL)
 	PHP_FE(pango_layout_get_indent, NULL)
  	PHP_FE(pango_layout_set_spacing, NULL)
  	PHP_FE(pango_layout_get_spacing, NULL)
 	PHP_FE(pango_layout_set_ellipsize, NULL)
 	PHP_FE(pango_layout_get_ellipsize, NULL)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 	PHP_FE(pango_layout_is_ellipsized, NULL)
+#endif
+#endif
 	PHP_FE(pango_layout_get_lines, NULL)
 	PHP_FE(pango_layout_get_line, NULL)
 	PHP_FE(pango_layout_get_line_count, NULL)
@@ -116,8 +136,12 @@ const zend_function_entry pango_functions[] = {
 /* }}} */
 
 const zend_function_entry pango_methods[] = {
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 16, 0)
 	PHP_ME_MAPPING(version, pango_version, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
 	PHP_ME_MAPPING(versionString, pango_version_string, NULL, ZEND_ACC_PUBLIC|ZEND_ACC_STATIC)
+#endif
+#endif
 	{NULL, NULL, NULL}
 };
 
@@ -199,7 +223,11 @@ PHP_MINFO_FUNCTION(pango)
 			"compiled as static module"
 #endif
 	);
+#ifdef PANGO_VERSION_STRING
 	php_info_print_table_row(2, "Pango version", PANGO_VERSION_STRING);
+#else
+	php_info_print_table_row(2, "Pango version", "Unknown");
+#endif
 	php_info_print_table_row(2, "Extension version", PHP_PANGO_VERSION);
 	php_info_print_table_end();
 
