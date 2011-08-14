@@ -96,6 +96,7 @@ PHP_MINIT_FUNCTION(pango_error);
 PHP_MINIT_FUNCTION(pango_context);
 PHP_MINIT_FUNCTION(pango_layout);
 PHP_MINIT_FUNCTION(pango_font);
+PHP_MINIT_FUNCTION(pango_line);
 
 PHP_FUNCTION(pango_version);
 PHP_FUNCTION(pango_version_string);
