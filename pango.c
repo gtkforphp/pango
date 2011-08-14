@@ -68,6 +68,15 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_new, NULL)
 	PHP_FE(pango_cairo_update_layout, NULL)
 	PHP_FE(pango_cairo_show_layout, NULL)
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 6, 0)
+	PHP_FE(pango_context_set_base_gravity, NULL)
+	PHP_FE(pango_context_get_base_gravity, NULL)
+	PHP_FE(pango_context_get_gravity, NULL)
+	PHP_FE(pango_context_set_gravity_hint, NULL)
+	PHP_FE(pango_context_get_gravity_hint, NULL)
+#endif
+#endif
 	PHP_FE(pango_layout_get_context, NULL)
 	PHP_FE(pango_layout_set_text, NULL)
 	PHP_FE(pango_layout_get_text, NULL)

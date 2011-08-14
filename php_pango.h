@@ -106,6 +106,15 @@ PHP_FUNCTION(pango_layout_new);
 PHP_FUNCTION(pango_cairo_update_layout);
 PHP_FUNCTION(pango_cairo_show_layout);
 PHP_FUNCTION(pango_cairo_show_path);
+#ifdef PANGO_VERSION
+#if PANGO_VERSION >= PANGO_VERSION_ENCODE(1, 6, 0)
+PHP_FUNCTION(pango_context_set_base_gravity);
+PHP_FUNCTION(pango_context_get_base_gravity);
+PHP_FUNCTION(pango_context_get_gravity);
+PHP_FUNCTION(pango_context_set_gravity_hint);
+PHP_FUNCTION(pango_context_get_gravity_hint);
+#endif
+#endif
 PHP_FUNCTION(pango_layout_get_context);
 PHP_FUNCTION(pango_layout_set_text);
 PHP_FUNCTION(pango_layout_get_text);
