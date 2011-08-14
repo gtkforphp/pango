@@ -1,8 +1,7 @@
 This is the start of a Pango binding for PHP. Current requirements are:
 
 * PHP 5.2+
-* Pango 1.20+ though this will likely change to a lower version when I've done
-  some research on it
+* Pango 1.14+ 
 * pecl/cairo. Currently the only functionality I'm wrapping are those required
   to make Cairo rendering work which will suit my own purposes - however, once 
   that works I intend to remove the hard dependency here if I can.
