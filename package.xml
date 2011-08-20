@@ -11,12 +11,14 @@
      <active>yes</active>
     </lead>
 
-    <date>2011-03-11</date>
-    <version><release>0.1.0</release><api>0.1.0</api></version>
-    <stability><release>alpha</release><api>alpha</api></stability>
+    <date>2011-08-20</date>
+    <version><release>0.2.0</release><api>0.2.0</api></version>
+    <stability><release>beta</release><api>beta</api></stability>
     <license uri="http://www.php.net/license">PHP License</license>
     <notes>
-     * Initial release
+     * Changes minimum requirements to Pango 1.12
+     * Add layout gravity support
+     * Various bugfixes
     </notes>
 
     <contents>
