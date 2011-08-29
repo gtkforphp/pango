@@ -47,6 +47,7 @@ PHP_METHOD(PangoFontDescription, __construct)
 		PHP_PANGO_RESTORE_ERRORS(TRUE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(TRUE)
 
 	if(text_len) {
 		fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(getThis() TSRMLS_CC);
@@ -77,6 +78,7 @@ PHP_FUNCTION(pango_font_description_new)
 		PHP_PANGO_RESTORE_ERRORS(TRUE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(TRUE)
 
 	object_init_ex(return_value, pango_ce_pangofontdescription);
 	if(text_len) {

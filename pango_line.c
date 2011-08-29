@@ -84,6 +84,7 @@ PHP_FUNCTION(pango_layout_line_get_extents)
 		PHP_PANGO_RESTORE_ERRORS(FALSE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
 	pango_layout_line_get_extents(layoutline_object->line, &ink, &logical);
@@ -129,6 +130,7 @@ PHP_FUNCTION(pango_layout_line_get_pixel_extents)
 		PHP_PANGO_RESTORE_ERRORS(FALSE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
 	pango_layout_line_get_pixel_extents(layoutline_object->line, &ink, &logical);
@@ -177,6 +179,7 @@ PHP_FUNCTION(pango_cairo_show_layout_line)
 		PHP_PANGO_RESTORE_ERRORS(FALSE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layoutline_object = (pango_layoutline_object *)zend_object_store_get_object(layoutline_zval TSRMLS_CC);
 

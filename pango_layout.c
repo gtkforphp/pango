@@ -118,6 +118,7 @@ PHP_FUNCTION(pango_layout_get_context)
 		PHP_PANGO_RESTORE_ERRORS(FALSE)
 		return;
 	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
 	context = pango_layout_get_context(layout_object->layout);
