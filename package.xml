@@ -11,14 +11,13 @@
      <active>yes</active>
     </lead>
 
-    <date>2011-08-20</date>
-    <version><release>0.2.0</release><api>0.2.0</api></version>
+    <date>2011-08-29</date>
+    <version><release>0.2.1</release><api>0.2.1</api></version>
     <stability><release>beta</release><api>beta</api></stability>
     <license uri="http://www.php.net/license">PHP License</license>
     <notes>
-     * Changes minimum requirements to Pango 1.12
-     * Add layout gravity support
-     * Various bugfixes
+     * Fixes a bug where the error handling might not be restored after some method calls
+       (Thanks to Arjen Brouwer for the bug report)
     </notes>
 
     <contents>
