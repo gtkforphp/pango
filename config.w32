@@ -1,13 +1,24 @@
-// $Id$
-// vim:ft=javascript
 
-// If your extension references something external, use ARG_WITH
-// ARG_WITH("pango", "for pango support", "no");
-
-// Otherwise, use ARG_ENABLE
-// ARG_ENABLE("pango", "enable pango support", "no");
+ARG_ENABLE("pango", "enable pango support", "no");
 
 if (PHP_PANGO != "no") {
-	EXTENSION("pango", "pango.c");
+	if (CHECK_HEADER_ADD_INCLUDE("pango.h", "CFLAGS_PANGO", PHP_PANGO+ ";" + PHP_PHP_BUILD + "\\include\\pango") &&
+			CHECK_HEADER_ADD_INCLUDE("glib.h", "CFLAGS_PANGO", PHP_PANGO+ ";" + PHP_PHP_BUILD + "\\include\\glib-pango") &&
+			CHECK_HEADER_ADD_INCLUDE("glib-object.h", "CFLAGS_PANGO", PHP_PANGO+ ";" + PHP_PHP_BUILD + "\\include\\glib-pango") &&
+			
+			CHECK_HEADER_ADD_INCLUDE("cairo.h", "CFLAGS_PANGO", PHP_PANGO+ ";" + PHP_PHP_BUILD + "\\include\\cairo") &&
+			CHECK_HEADER_ADD_INCLUDE("php_cairo_api.h", "CFLAGS_PANGO", PHP_PANGO+ ";" + PHP_PHP_BUILD + "\\..\\pecl\\cairo") &&
+			
+			CHECK_LIB("pango-1.0.lib", "pango", PHP_PANGO) &&
+			CHECK_LIB("pangocairo-1.0.lib", "pango", PHP_PANGO) &&
+			CHECK_LIB("cairo.lib", "pango", PHP_PANGO) &&
+			CHECK_LIB("gobject-2.0.lib", "pango", PHP_PANGO) &&
+			
+			ADD_EXTENSION_DEP('pango', 'cairo')) {
+			
+		EXTENSION("pango", "pango.c pango_error.c pango_context.c pango_layout.c pango_font.c pango_line.c");
+		AC_DEFINE("HAVE_PANGO", 1);		
+	}
 }
+
 
