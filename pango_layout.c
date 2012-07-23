@@ -1082,7 +1082,11 @@ static zend_object_value pango_layout_object_new(zend_class_entry *ce TSRMLS_DC)
 
     ALLOC_HASHTABLE(layout->std.properties);
     zend_hash_init(layout->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
-    zend_hash_copy(layout->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *));
+    #if PHP_VERSION_ID < 50399
+        zend_hash_copy(layout->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *));
+    #else
+        object_properties_init(&(layout->std), ce);
+    #endif
     retval.handle = zend_objects_store_put(layout, NULL, (zend_objects_free_object_storage_t)pango_layout_object_destroy, NULL TSRMLS_CC);
     retval.handlers = &pango_std_object_handlers;
     return retval;

@@ -208,7 +208,11 @@ static void pango_layoutline_object_destroy(void *object TSRMLS_DC)
 	efree(object);
 }
 
+#if PHP_VERSION_ID < 50399
 static void php_pango_layoutline_write_property(zval *object, zval *member, zval *value TSRMLS_DC)
+#else
+static void php_pango_layoutline_write_property(zval *object, zval *member, zval *value, const zend_literal *key TSRMLS_DC)
+#endif
 {
 	zval tmp_member;
 
@@ -226,7 +230,11 @@ static void php_pango_layoutline_write_property(zval *object, zval *member, zval
 		zend_throw_exception_ex(pango_ce_pangoexception, 0 TSRMLS_CC,
 				"Cannot set read-only property %s::$%s", Z_OBJCE_P(object)->name, Z_STRVAL_P(member));
 	} else {
+		#if PHP_VERSION_ID < 50399
 		pango_std_object_handlers.write_property(object, member, value TSRMLS_CC);
+		#else
+		pango_std_object_handlers.write_property(object, member, value, key TSRMLS_CC);
+		#endif
 	}
 
 	if (member == &tmp_member) {
@@ -248,7 +256,11 @@ static zend_object_value pango_layoutline_object_new(zend_class_entry *ce TSRMLS
 
 	ALLOC_HASHTABLE(layoutline->std.properties);
 	zend_hash_init(layoutline->std.properties, 0, NULL, ZVAL_PTR_DTOR, 0);
-	zend_hash_copy(layoutline->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *)); 
+	#if PHP_VERSION_ID < 50399
+		zend_hash_copy(layoutline->std.properties, &ce->default_properties, (copy_ctor_func_t) zval_add_ref,(void *) &temp, sizeof(zval *)); 
+	#else
+		object_properties_init(&(layoutline->std), ce);
+	#endif
 	retval.handle = zend_objects_store_put(layoutline, NULL, (zend_objects_free_object_storage_t)pango_layoutline_object_destroy, NULL TSRMLS_CC);
 	retval.handlers = &pango_layoutline_object_handlers;
 	return retval;
