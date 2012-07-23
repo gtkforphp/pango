@@ -11,13 +11,12 @@
      <active>yes</active>
     </lead>
 
-    <date>2011-08-29</date>
-    <version><release>0.2.1</release><api>0.2.1</api></version>
+    <date>2012-07-23</date>
+    <version><release>0.2.2</release><api>0.2.2</api></version>
     <stability><release>beta</release><api>beta</api></stability>
     <license uri="http://www.php.net/license">PHP License</license>
     <notes>
-     * Fixes a bug where the error handling might not be restored after some method calls
-       (Thanks to Arjen Brouwer for the bug report)
+		* Adds a patch from Aleš Krajník to fix compilation on 5.4
     </notes>
 
     <contents>
