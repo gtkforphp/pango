@@ -1050,6 +1050,25 @@ PHP_FUNCTION(pango_layout_get_line_count)
 	RETURN_LONG(pango_layout_get_line_count(layout_object->layout));
 }
 
+/* {{{ proto long pango_layout_get_baseline(PangoLayout layout)
+	   proto long PangoLayout::getBaseline()
+	   Gets the Y position of baseline of the first line in the layout. */
+PHP_FUNCTION(pango_layout_get_baseline)
+{
+	zval *layout_zval = NULL, *elem = NULL;
+	pango_layout_object *layout_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &layout_zval, pango_ce_pangolayout) == FAILURE) {
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+	
+	layout_object = (pango_layout_object *)zend_object_store_get_object(layout_zval TSRMLS_CC);
+	RETURN_LONG(pango_layout_get_baseline(layout_object->layout));
+}
+
 /* {{{ Object creation/destruction functions */
 static void pango_layout_object_destroy(void *object TSRMLS_DC)
 {
@@ -1143,6 +1162,7 @@ const zend_function_entry pango_layout_methods[] = {
 	PHP_ME_MAPPING(getLines, pango_layout_get_lines, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getLine, pango_layout_get_line, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(getLineCount, pango_layout_get_line_count, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(getBaseline, pango_layout_get_baseline, NULL, ZEND_ACC_PUBLIC)
 	{NULL, NULL, NULL}
 };
 /* }}} */

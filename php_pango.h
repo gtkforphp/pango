@@ -147,6 +147,7 @@ PHP_FUNCTION(pango_layout_is_ellipsized);
 PHP_FUNCTION(pango_layout_get_lines);
 PHP_FUNCTION(pango_layout_get_line);
 PHP_FUNCTION(pango_layout_get_line_count);
+PHP_FUNCTION(pango_layout_get_baseline);
 PHP_FUNCTION(pango_layout_context_changed);
 
 /* PangoLayoutLine functions */

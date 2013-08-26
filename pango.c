@@ -127,6 +127,7 @@ const zend_function_entry pango_functions[] = {
 	PHP_FE(pango_layout_get_lines, NULL)
 	PHP_FE(pango_layout_get_line, NULL)
 	PHP_FE(pango_layout_get_line_count, NULL)
+	PHP_FE(pango_layout_get_baseline, NULL)
 	PHP_FE(pango_layout_context_changed, NULL)
 
 	/* PangoLayoutLine functions */
