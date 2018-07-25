@@ -24,6 +24,7 @@
 #include "php_pango.h"
 
 #include "zend_exceptions.h"
+#include "fontconfig/fontconfig.h"
 
 zend_class_entry *pango_ce_pangofontdescription;
 zend_class_entry *pango_ce_pangostyle;
@@ -93,27 +94,22 @@ PHP_FUNCTION(pango_font_description_new)
 }
 /* }}} */
 
-/* {{{ proto long pango_font_description_get_variant(PangoFontDescription fontdesc)
-   proto long PangoFontDescription::getVariant()
-	   Sets the variant of the font description. */
-PHP_FUNCTION(pango_font_description_get_variant)
+PHP_FUNCTION(pango_font_description_set_font_file)
 {
-	zval *fontdesc_zval = NULL;
-	pango_fontdesc_object *fontdesc_object;
+	const char *font_file_path;
+	long font_file_path_len = -1;
 
-	PHP_PANGO_ERROR_HANDLING(FALSE)
-	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE)
+	PHP_PANGO_ERROR_HANDLING(TRUE)
+	if(zend_parse_parameters(ZEND_NUM_ARGS() TSRMLS_CC, "s", &font_file_path, &font_file_path_len) == FAILURE)
 	{
-		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		PHP_PANGO_RESTORE_ERRORS(TRUE)
 		return;
 	}
-	PHP_PANGO_RESTORE_ERRORS(FALSE)
+	PHP_PANGO_RESTORE_ERRORS(TRUE)
 
-	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
-	RETURN_LONG(pango_font_description_get_variant(fontdesc_object->fontdesc));
+	const FcChar8 * file = (const FcChar8 *)font_file_path;
+	RETURN_BOOL(FcConfigAppFontAddFile(FcConfigGetCurrent(), file));
 }
-
-/* }}} */
 
 /* {{{ proto void pango_font_description_set_variant (PangoFontDescription fontdesc, long variant)
    proto void PangoFontDescription::setVariant(long variant)
@@ -133,6 +129,29 @@ PHP_FUNCTION(pango_font_description_set_variant)
 
 	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
 	pango_font_description_set_variant(fontdesc_object->fontdesc, variant);
+}
+
+/* }}} */
+
+
+/* {{{ proto long pango_font_description_get_variant(PangoFontDescription fontdesc)
+   proto long PangoFontDescription::getVariant()
+	   Sets the variant of the font description. */
+PHP_FUNCTION(pango_font_description_get_variant)
+{
+	zval *fontdesc_zval = NULL;
+	pango_fontdesc_object *fontdesc_object;
+
+	PHP_PANGO_ERROR_HANDLING(FALSE)
+	if(zend_parse_method_parameters(ZEND_NUM_ARGS() TSRMLS_CC, getThis(), "O", &fontdesc_zval, pango_ce_pangofontdescription) == FAILURE)
+	{
+		PHP_PANGO_RESTORE_ERRORS(FALSE)
+		return;
+	}
+	PHP_PANGO_RESTORE_ERRORS(FALSE)
+
+	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
+	RETURN_LONG(pango_font_description_get_variant(fontdesc_object->fontdesc));
 }
 
 /* }}} */
@@ -226,7 +245,7 @@ PHP_FUNCTION(pango_font_description_set_size)
 	PHP_PANGO_RESTORE_ERRORS(FALSE)
 
 	fontdesc_object = (pango_fontdesc_object *)zend_object_store_get_object(fontdesc_zval TSRMLS_CC);
-	pango_font_description_set_size(fontdesc_object->fontdesc, size);
+	pango_font_description_set_size(fontdesc_object->fontdesc, size * PANGO_SCALE);
 }
 
 /* }}} */
@@ -469,6 +488,7 @@ const zend_function_entry pango_fontdesc_methods[] = {
 	PHP_ME_MAPPING(getStretch, pango_font_description_get_stretch, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(setStretch, pango_font_description_set_stretch, NULL, ZEND_ACC_PUBLIC)
 	PHP_ME_MAPPING(toString, pango_font_description_to_string, NULL, ZEND_ACC_PUBLIC)
+	PHP_ME_MAPPING(setFontFile, pango_font_description_set_font_file, NULL, ZEND_ACC_PUBLIC)
 	{ NULL, NULL, NULL }
 };
 
